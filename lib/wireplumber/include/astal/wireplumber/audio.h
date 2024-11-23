@@ -12,7 +12,7 @@ G_BEGIN_DECLS
 
 G_DECLARE_FINAL_TYPE(AstalWpAudio, astal_wp_audio, ASTAL_WP, AUDIO, GObject)
 
-AstalWpEndpoint *astal_wp_audio_get_speaker(AstalWpAudio *self, guint id);
+AstalWpEndpoint *astal_wp_audio_get_speaker(AstalWpAudio * self, guint id);
 AstalWpEndpoint *astal_wp_audio_get_microphone(AstalWpAudio *self, guint id);
 AstalWpEndpoint *astal_wp_audio_get_recorder(AstalWpAudio *self, guint id);
 AstalWpEndpoint *astal_wp_audio_get_stream(AstalWpAudio *self, guint id);

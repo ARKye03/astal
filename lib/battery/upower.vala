@@ -3,11 +3,11 @@
  */
 public class AstalBattery.UPower : Object {
     private IUPower proxy;
-    private HashTable<string, Device> _devices =
-        new HashTable<string, Device>(str_hash, str_equal);
+    private HashTable <string, Device> _devices =
+        new HashTable <string, Device>(str_hash, str_equal);
 
     /** List of UPower devices. */
-    public List<weak Device> devices {
+    public List <weak Device> devices {
         owned get { return _devices.get_values(); }
     }
 
@@ -18,7 +18,7 @@ public class AstalBattery.UPower : Object {
     public signal void device_removed(Device device);
 
     /** A composite device that represents the battery status. */
-    public Device display_device { owned get { return Device.get_default(); }}
+    public Device display_device { owned get { return Device.get_default(); } }
 
     public string daemon_version { owned get { return proxy.daemon_version; } }
 

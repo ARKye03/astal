@@ -1,5 +1,5 @@
 public class AstalHyprland.Monitor : Object {
-    public signal void removed ();
+    public signal void removed();
 
     public int id { get; private set; }
     public string name { get; private set; }
@@ -26,7 +26,7 @@ public class AstalHyprland.Monitor : Object {
     public bool actively_tearing { get; private set; }
     public bool disabled { get; private set; }
     public string current_format { get; private set; }
-    public Array<string> available_modes { get; private set; }
+    public Array <string> available_modes { get; private set; }
 
     internal void sync(Json.Object obj) {
         var hyprland = Hyprland.get_default();
@@ -57,7 +57,7 @@ public class AstalHyprland.Monitor : Object {
         reserved_left = (int)r.get_int_element(2);
         reserved_right = (int)r.get_int_element(3);
 
-        var modes = new Array<string>();
+        var modes = new Array <string>();
         foreach (var mode in obj.get_array_member("availableModes").get_elements())
             modes.append_val(mode.get_string());
 

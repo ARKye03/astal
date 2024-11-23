@@ -5,30 +5,38 @@
  * struct as the argument in GJS event handlers.
  */
 public class Astal.Button : Gtk.Button {
-    public signal void hover (HoverEvent event);
-    public signal void hover_lost (HoverEvent event);
-    public signal void click (ClickEvent event);
-    public signal void click_release (ClickEvent event);
-    public signal void scroll (ScrollEvent event);
+    public signal void hover(HoverEvent event);
+    public signal void hover_lost(HoverEvent event);
+    public signal void click(ClickEvent event);
+    public signal void click_release(ClickEvent event);
+    public signal void scroll(ScrollEvent event);
 
     construct {
         add_events(Gdk.EventMask.SCROLL_MASK);
         add_events(Gdk.EventMask.SMOOTH_SCROLL_MASK);
 
         enter_notify_event.connect((self, event) => {
-            hover(HoverEvent(event) { lost = false });
+            hover(HoverEvent(event) {
+                lost = false
+            });
         });
 
         leave_notify_event.connect((self, event) => {
-            hover_lost(HoverEvent(event) { lost = true });
+            hover_lost(HoverEvent(event) {
+                lost = true
+            });
         });
 
         button_press_event.connect((event) => {
-            click(ClickEvent(event) { release = false });
+            click(ClickEvent(event) {
+                release = false
+            });
         });
 
         button_release_event.connect((event) => {
-            click_release(ClickEvent(event) { release = true });
+            click_release(ClickEvent(event) {
+                release = true
+            });
         });
 
         scroll_event.connect((event) => {

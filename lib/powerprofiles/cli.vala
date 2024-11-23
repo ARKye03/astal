@@ -21,7 +21,7 @@ int main(string[] argv) {
         opts.set_ignore_unknown_options(false);
         opts.parse(ref argv);
     } catch (OptionError err) {
-        printerr (err.message);
+        printerr(err.message);
         return 1;
     }
 
@@ -81,6 +81,7 @@ int main(string[] argv) {
 
 string to_json_string(AstalPowerProfiles.PowerProfiles profiles) {
     var acts = new Json.Builder().begin_array();
+
     foreach (var action in profiles.actions) {
         acts.add_string_value(action);
     }
@@ -88,34 +89,34 @@ string to_json_string(AstalPowerProfiles.PowerProfiles profiles) {
     var active_holds = new Json.Builder().begin_array();
     foreach (var action in profiles.active_profile_holds) {
         active_holds.add_value(new Json.Builder()
-            .begin_object()
-            .set_member_name("application_id").add_string_value(action.application_id)
-            .set_member_name("profile").add_string_value(action.profile)
-            .set_member_name("reason").add_string_value(action.reason)
-            .end_object()
-            .get_root());
+                               .begin_object()
+                               .set_member_name("application_id").add_string_value(action.application_id)
+                               .set_member_name("profile").add_string_value(action.profile)
+                               .set_member_name("reason").add_string_value(action.reason)
+                               .end_object()
+                               .get_root());
     }
 
     var profs = new Json.Builder().begin_array();
     foreach (var prof in profiles.profiles) {
         profs.add_value(new Json.Builder()
-            .begin_object()
-            .set_member_name("profie").add_string_value(prof.profile)
-            .set_member_name("driver").add_string_value(prof.driver)
-            .set_member_name("cpu_driver").add_string_value(prof.cpu_driver)
-            .set_member_name("platform_driver").add_string_value(prof.platform_driver)
-            .end_object()
-            .get_root());
+                        .begin_object()
+                        .set_member_name("profie").add_string_value(prof.profile)
+                        .set_member_name("driver").add_string_value(prof.driver)
+                        .set_member_name("cpu_driver").add_string_value(prof.cpu_driver)
+                        .set_member_name("platform_driver").add_string_value(prof.platform_driver)
+                        .end_object()
+                        .get_root());
     }
 
     return Json.to_string(new Json.Builder()
-        .begin_object()
-        .set_member_name("active_profile").add_string_value(profiles.active_profile)
-        .set_member_name("icon_name").add_string_value(profiles.icon_name)
-        .set_member_name("performance_degraded").add_string_value(profiles.performance_degraded)
-        .set_member_name("actions").add_value(acts.end_array().get_root())
-        .set_member_name("active_profile_holds").add_value(active_holds.end_array().get_root())
-        .set_member_name("profiles").add_value(profs.end_array().get_root())
-        .end_object()
-        .get_root(), false);
+                          .begin_object()
+                          .set_member_name("active_profile").add_string_value(profiles.active_profile)
+                          .set_member_name("icon_name").add_string_value(profiles.icon_name)
+                          .set_member_name("performance_degraded").add_string_value(profiles.performance_degraded)
+                          .set_member_name("actions").add_value(acts.end_array().get_root())
+                          .set_member_name("active_profile_holds").add_value(active_holds.end_array().get_root())
+                          .set_member_name("profiles").add_value(profs.end_array().get_root())
+                          .end_object()
+                          .get_root(), false);
 }

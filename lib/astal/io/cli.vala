@@ -3,8 +3,8 @@ static bool help;
 static bool list;
 static bool quit;
 static bool inspector;
-static string? toggle_window;
-static string? instance_name;
+static string ?toggle_window;
+static string ?instance_name;
 
 const OptionEntry[] options = {
     { "version", 'v', OptionFlags.NONE, OptionArg.NONE, ref version, null, null },
@@ -20,6 +20,7 @@ const OptionEntry[] options = {
 int err(string msg) {
     var red = "\x1b[31m";
     var r = "\x1b[0m";
+
     printerr(@"$(red)error: $(r)$msg");
     return 1;
 }

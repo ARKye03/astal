@@ -7,9 +7,9 @@ G_BEGIN_DECLS
 
 typedef struct _WLSource WLSource;
 
-WLSource* wl_source_new();
-void wl_source_free(WLSource* self);
-struct wl_display* wl_source_get_display(WLSource* source);
+WLSource * wl_source_new();
+void wl_source_free(WLSource *self);
+struct wl_display * wl_source_get_display(WLSource *source);
 
 G_END_DECLS
 

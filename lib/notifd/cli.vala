@@ -27,7 +27,7 @@ int main(string[] argv) {
         opts.set_ignore_unknown_options(false);
         opts.parse(ref argv);
     } catch (OptionError err) {
-        printerr (err.message);
+        printerr(err.message);
         return 1;
     }
 

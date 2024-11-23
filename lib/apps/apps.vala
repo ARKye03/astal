@@ -6,8 +6,8 @@
 public class AstalApps.Apps : Object {
     private string cache_directory;
     private string cache_file;
-    private List<Application> _list;
-    private HashTable<string, int> frequents { get; private set; }
+    private List <Application> _list;
+    private HashTable <string, int> frequents { get; private set; }
 
     /**
      * Indicates wether hidden applications should included in queries.
@@ -17,7 +17,7 @@ public class AstalApps.Apps : Object {
     /**
      * Full list of available applications.
      */
-    public List<weak Application> list { owned get { return _list.copy(); } }
+    public List <weak Application> list { owned get { return _list.copy(); } }
 
     /**
      * The minimum score the application has to meet in order to be included in queries.
@@ -63,7 +63,7 @@ public class AstalApps.Apps : Object {
     construct {
         cache_directory = Environment.get_user_cache_dir() + "/astal";
         cache_file = cache_directory + "/apps-frequents.json";
-        frequents = new HashTable<string, int>(str_hash, str_equal);
+        frequents = new HashTable <string, int>(str_hash, str_equal);
 
         AppInfoMonitor.get().changed.connect(() => {
             reload();
@@ -122,7 +122,7 @@ public class AstalApps.Apps : Object {
         return score(search, a, EXACT);
     }
 
-    internal List<weak Application> query(string? search = "", SearchAlgorithm alg = FUZZY) {
+    internal List <weak Application> query(string ?search = "", SearchAlgorithm alg = FUZZY) {
         if (search == null)
             search = "";
 
@@ -174,14 +174,14 @@ public class AstalApps.Apps : Object {
     /**
      * Query the `list` of applications with a fuzzy matching algorithm.
      */
-    public List<weak Application> fuzzy_query(string? search = "") {
+    public List <weak Application> fuzzy_query(string ?search = "") {
         return query(search, FUZZY);
     }
 
     /**
      * Query the `list` of applications with a simple string matching algorithm.
      */
-    public List<weak Application> exact_query(string? search = "") {
+    public List <weak Application> exact_query(string ?search = "") {
         return query(search, EXACT);
     }
 
@@ -191,7 +191,7 @@ public class AstalApps.Apps : Object {
     public void reload() {
         var arr = AppInfo.get_all();
 
-        _list = new List<Application>();
+        _list = new List <Application>();
         foreach (var app in arr) {
             if (!show_hidden && !app.should_show())
                 continue;

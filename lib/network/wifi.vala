@@ -11,18 +11,18 @@ public class AstalNetwork.Wifi : Object {
     internal const string ICON_NO_ROUTE = "network-wireless-no-route-symbolic";
     internal const string ICON_HOTSPOT = "network-wireless-hotspot-symbolic";
 
-    private HashTable<string, AccessPoint> _access_points =
-        new HashTable<string, AccessPoint>(str_hash, str_equal);
+    private HashTable <string, AccessPoint> _access_points =
+        new HashTable <string, AccessPoint>(str_hash, str_equal);
 
     public NM.DeviceWifi device { get; construct set; }
 
-    public NM.ActiveConnection? active_connection { get; private set; }
+    public NM.ActiveConnection ?active_connection { get; private set; }
     private ulong connection_handler = 0;
 
-    public AccessPoint? active_access_point { get; private set; }
+    public AccessPoint ?active_access_point { get; private set; }
     private ulong ap_handler = 0;
 
-    public List<weak AccessPoint> access_points {
+    public List <weak AccessPoint> access_points {
         owned get { return _access_points.get_values(); }
     }
 
@@ -147,12 +147,17 @@ public class AstalNetwork.Wifi : Object {
 
         if (internet == Internet.CONNECTED) {
             if (is_hotspot) return ICON_HOTSPOT;
+
             if (!full) return ICON_NO_ROUTE;
+
             if (active_access_point == null) return ICON_CONNECTED;
 
             if (strength >= 80) return ICON_EXCELLENT;
+
             if (strength >= 60) return ICON_GOOD;
+
             if (strength >= 40) return ICON_OK;
+
             if (strength >= 20) return ICON_WEAK;
 
             return ICON_NONE;

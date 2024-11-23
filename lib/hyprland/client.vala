@@ -1,7 +1,7 @@
 namespace AstalHyprland {
 public class Client : Object {
-    public signal void removed ();
-    public signal void moved_to (Workspace workspace);
+    public signal void removed();
+    public signal void moved_to(Workspace workspace);
 
     public string address { get; private set; }
     public bool mapped { get; private set; }

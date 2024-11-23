@@ -1,15 +1,15 @@
 namespace AstalPowerProfiles {
-[DBus (name = "org.freedesktop.UPower.PowerProfiles")]
+[DBus(name = "org.freedesktop.UPower.PowerProfiles")]
 private interface IPowerProfiles : DBusProxy {
     public abstract string[] actions { owned get; }
     public abstract string active_profile { owned get; set; }
-    public abstract HashTable<string, Variant>[] active_profile_holds { owned get; }
+    public abstract HashTable <string, Variant>[] active_profile_holds { owned get; }
     public abstract string performance_degraded { owned get; }
     public abstract string performance_inhibited { owned get; }
-    public abstract HashTable<string, Variant>[] profiles { owned get; }
+    public abstract HashTable <string, Variant>[] profiles { owned get; }
     public abstract string version { owned get; }
 
-    public signal void profile_released (uint cookie);
+    public signal void profile_released(uint cookie);
 
     public abstract uint hold_profile(string profile, string reason, string application_id) throws Error;
     public abstract void release_profile(uint cookie) throws Error;
@@ -46,14 +46,14 @@ public class PowerProfiles : Object {
 
             proxy.profile_released.connect((cookie) => profile_released(cookie));
             proxy.g_properties_changed.connect((props) => {
-                var map = (HashTable<string, Variant>)props;
-                foreach (var key in map.get_keys()) {
-                    notify_property(kebab_case(key));
-                    if (key == "ActiveProfile")
-                        notify_property("icon-name");
-                }
-            });
-        } catch (Error error){
+                    var map = (HashTable <string, Variant>)props;
+                    foreach (var key in map.get_keys()) {
+                        notify_property(kebab_case(key));
+                        if (key == "ActiveProfile")
+                            notify_property("icon-name");
+                    }
+                });
+        } catch (Error error) {
             critical(error.message);
         }
     }
@@ -145,7 +145,7 @@ public class PowerProfiles : Object {
      * This will only be emitted to the process that originally called
      * [method@AstalPowerProfiles.PowerProfiles.hold_profile].
      */
-    public signal void profile_released (uint cookie);
+    public signal void profile_released(uint cookie);
 
     /**
      * This forces the passed profile (either 'power-saver' or 'performance')
@@ -188,6 +188,7 @@ public struct Profile {
     public string profile;
     public string cpu_driver;
     public string platform_driver;
+
     /**
      * Identifies the power-profiles-daemon backend code used to implement the profile.
      */
@@ -212,7 +213,8 @@ private string kebab_case(string pascal_case) {
             }
 
             kebab_case.append_c((char)(c + 32));
-        } else {
+        }
+        else {
             kebab_case.append_c(c);
         }
     }

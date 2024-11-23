@@ -1,4 +1,4 @@
-[DBus (name = "org.freedesktop.Notifications")]
+[DBus(name = "org.freedesktop.Notifications")]
 internal interface AstalNotifd.IDaemon : DBusProxy {
     public abstract bool ignore_timeout { get; set; }
     public abstract bool dont_disturb { get; set; }
@@ -15,10 +15,10 @@ internal interface AstalNotifd.IDaemon : DBusProxy {
 }
 
 internal class AstalNotifd.DaemonProxy : Object {
-    private HashTable<uint, Notification> notifs =
-        new HashTable<uint, Notification>((i) => i, (a, b) => a == b);
+    private HashTable <uint, Notification> notifs =
+        new HashTable <uint, Notification>((i) => i, (a, b) => a == b);
 
-    public List<weak Notification> notifications {
+    public List <weak Notification> notifications {
         owned get { return notifs.get_values(); }
     }
 
@@ -40,7 +40,7 @@ internal class AstalNotifd.DaemonProxy : Object {
     public signal void resolved(uint id, ClosedReason reason);
 
     private IDaemon proxy;
-    private List<ulong> ids = new List<ulong>();
+    private List <ulong> ids = new List <ulong>();
 
     public void stop() {
         if (ids.length() > 0) {
@@ -50,7 +50,7 @@ internal class AstalNotifd.DaemonProxy : Object {
     }
 
     public bool start() {
-        try  {
+        try {
             var bus = Bus.get_sync(BusType.SESSION, null);
             var variant = bus.call_sync(
                 "org.freedesktop.Notifications",
@@ -67,14 +67,15 @@ internal class AstalNotifd.DaemonProxy : Object {
             var vendor = variant.get_child_value(1).get_string();
             var version = variant.get_child_value(2).get_string();
 
-            var running = name == Daemon.name
-                && vendor == Daemon.vendor
-                && version == Daemon.version;
+            var running = name == Daemon.name &&
+                          vendor == Daemon.vendor &&
+                          version == Daemon.version;
 
             if (running) {
                 setup_proxy();
                 return true;
-            } else {
+            }
+            else {
                 critical("cannot get proxy: %s is already running", name);
             }
         } catch (Error err) {

@@ -1,8 +1,8 @@
 namespace AstalTray {
-[DBus (name="org.kde.StatusNotifierWatcher")]
+[DBus(name = "org.kde.StatusNotifierWatcher")]
 internal class StatusNotifierWatcher : Object {
-    private HashTable<string, string> _items =
-        new HashTable<string, string>(str_hash, str_equal);
+    private HashTable <string, string> _items =
+        new HashTable <string, string>(str_hash, str_equal);
 
     public string[] RegisteredStatusNotifierItems { owned get { return _items.get_values_as_ptr_array().data; } }
     public bool IsStatusNotifierHostRegistered { get; default = true; }
@@ -16,10 +16,12 @@ internal class StatusNotifierWatcher : Object {
     public void RegisterStatusNotifierItem(string service, BusName sender) throws DBusError, IOError {
         string busName;
         string path;
+
         if (service[0] == '/') {
             path = service;
             busName = sender;
-        } else {
+        }
+        else {
             busName = service;
             path = "/StatusNotifierItem";
         }
@@ -43,16 +45,16 @@ internal class StatusNotifierWatcher : Object {
             }
         );
 
-        _items.set(busName, busName+path);
-        StatusNotifierItemRegistered(busName+path);
+        _items.set(busName, busName + path);
+        StatusNotifierItemRegistered(busName + path);
     }
 
     public void RegisterStatusNotifierHost(string service) throws DBusError, IOError {
         /* NOTE:
-            usually the watcher should keep track of registered host
-            but some tray applications do net register their trayitem properly
-            when hosts register/deregister. This is fixed by setting isHostRegistered
-            always to true, this also make host handling logic unneccessary.
+         *  usually the watcher should keep track of registered host
+         *  but some tray applications do net register their trayitem properly
+         *  when hosts register/deregister. This is fixed by setting isHostRegistered
+         *  always to true, this also make host handling logic unneccessary.
          */
     }
 }

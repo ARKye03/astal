@@ -60,11 +60,11 @@ public class AstalApps.Application : Object {
 
             var categories = app.get_categories();
             var arr = categories.split(";");
-            return categories.has_suffix(";") ? arr[0:arr.length-1] : arr;
+            return categories.has_suffix(";") ? arr[0 : arr.length - 1] : arr;
         }
     }
 
-    internal Application(string id, int? frequency = 0) {
+    internal Application(string id, int ?frequency = 0) {
         Object(app: new DesktopAppInfo(id));
         this.frequency = frequency;
     }
@@ -161,17 +161,17 @@ public class AstalApps.Application : Object {
         }
 
         return new Json.Builder()
-            .begin_object()
-            .set_member_name("name").add_string_value(name)
-            .set_member_name("entry").add_string_value(entry)
-            .set_member_name("executable").add_string_value(executable)
-            .set_member_name("description").add_string_value(description)
-            .set_member_name("icon_name").add_string_value(icon_name)
-            .set_member_name("frequency").add_int_value(frequency)
-            .set_member_name("keywords").add_value(keyword_arr.end_array().get_root())
-            .set_member_name("categories").add_value(category_arr.end_array().get_root())
-            .end_object()
-            .get_root();
+               .begin_object()
+               .set_member_name("name").add_string_value(name)
+               .set_member_name("entry").add_string_value(entry)
+               .set_member_name("executable").add_string_value(executable)
+               .set_member_name("description").add_string_value(description)
+               .set_member_name("icon_name").add_string_value(icon_name)
+               .set_member_name("frequency").add_int_value(frequency)
+               .set_member_name("keywords").add_value(keyword_arr.end_array().get_root())
+               .set_member_name("categories").add_value(category_arr.end_array().get_root())
+               .end_object()
+               .get_root();
     }
 }
 

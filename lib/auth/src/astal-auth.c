@@ -24,7 +24,8 @@ static char *read_secret(const char *msg, gboolean echo) {
     newt = oldt;
     if (echo) {
         newt.c_lflag |= ECHO;
-    } else {
+    }
+    else {
         newt.c_lflag &= ~(ECHO);
     }
     if (tcsetattr(STDIN_FILENO, TCSANOW, &newt) != 0) {
@@ -51,6 +52,7 @@ static char *read_secret(const char *msg, gboolean echo) {
 
 static void authenticate(AstalAuthPam *pam) {
     static int attempts = 0;
+
     if (attempts >= 3) {
         g_print("%d failed attempts.\n", attempts);
         cleanup_and_quit(pam, EXIT_FAILURE);
@@ -64,6 +66,7 @@ static void authenticate(AstalAuthPam *pam) {
 
 static void on_visible(AstalAuthPam *pam, const gchar *data) {
     char *secret = read_secret(data, TRUE);
+
     if (secret == NULL) cleanup_and_quit(pam, EXIT_FAILURE);
     astal_auth_pam_supply_secret(pam, secret);
     g_free(secret);
@@ -107,22 +110,25 @@ int main(int argc, char **argv) {
     int opt;
     const char *optstring = "p:u:s:";
 
-    static struct option long_options[] = {{"password", required_argument, NULL, 'p'},
-                                           {"username", required_argument, NULL, 'u'},
-                                           {"service", required_argument, NULL, 's'},
-                                           {NULL, 0, NULL, 0}};
+    static struct option long_options[] = { { "password", required_argument, NULL, 'p' },
+                                            { "username", required_argument, NULL, 'u' },
+                                            { "service", required_argument, NULL, 's' },
+                                            { NULL, 0, NULL, 0 } };
 
     while ((opt = getopt_long(argc, argv, optstring, long_options, NULL)) != -1) {
         switch (opt) {
             case 'p':
                 password = optarg;
                 break;
+
             case 'u':
                 username = optarg;
                 break;
+
             case 's':
                 service = optarg;
                 break;
+
             default:
                 g_print("Usage: %s [-p password] [-u username] [-s service]\n", argv[0]);
                 exit(EXIT_FAILURE);
@@ -137,7 +143,8 @@ int main(int argc, char **argv) {
     if (service) astal_auth_pam_set_service(pam, service);
     if (password) {
         g_signal_connect(pam, "fail", G_CALLBACK(on_fail), (void *)FALSE);
-    } else {
+    }
+    else {
         g_signal_connect(pam, "auth-prompt-visible", G_CALLBACK(on_visible), NULL);
         g_signal_connect(pam, "auth-info", G_CALLBACK(on_info), NULL);
         g_signal_connect(pam, "auth-error", G_CALLBACK(on_error), NULL);

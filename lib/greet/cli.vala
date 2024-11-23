@@ -3,7 +3,7 @@ static bool version;
 static string username;
 static string password;
 static string cmd;
-[CCode (array_length = false, array_null_terminated = true)]
+[CCode(array_length = false, array_null_terminated = true)]
 static string[] env;
 
 const OptionEntry[] options = {
@@ -24,7 +24,7 @@ async int main(string[] argv) {
         opts.set_ignore_unknown_options(false);
         opts.parse(ref argv);
     } catch (OptionError err) {
-        printerr (err.message);
+        printerr(err.message);
         return 1;
     }
 

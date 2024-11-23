@@ -5,12 +5,12 @@
  * Its css selector is `eventbox`.
  */
 public class Astal.EventBox : Gtk.EventBox {
-    public signal void hover (HoverEvent event);
-    public signal void hover_lost (HoverEvent event);
-    public signal void click (ClickEvent event);
-    public signal void click_release (ClickEvent event);
-    public signal void scroll (ScrollEvent event);
-    public signal void motion (MotionEvent event);
+    public signal void hover(HoverEvent event);
+    public signal void hover_lost(HoverEvent event);
+    public signal void click(ClickEvent event);
+    public signal void click_release(ClickEvent event);
+    public signal void scroll(ScrollEvent event);
+    public signal void motion(MotionEvent event);
 
     static construct {
         set_css_name("eventbox");
@@ -25,7 +25,9 @@ public class Astal.EventBox : Gtk.EventBox {
             if (event.window == self.get_window() &&
                 event.detail != Gdk.NotifyType.INFERIOR) {
                 this.set_state_flags(Gtk.StateFlags.PRELIGHT, false);
-                hover(HoverEvent(event) { lost = false });
+                hover(HoverEvent(event) {
+                    lost = false
+                });
             }
         });
 
@@ -33,16 +35,22 @@ public class Astal.EventBox : Gtk.EventBox {
             if (event.window == self.get_window() &&
                 event.detail != Gdk.NotifyType.INFERIOR) {
                 this.unset_state_flags(Gtk.StateFlags.PRELIGHT);
-                hover_lost(HoverEvent(event) { lost = true });
+                hover_lost(HoverEvent(event) {
+                    lost = true
+                });
             }
         });
 
         button_press_event.connect((event) => {
-            click(ClickEvent(event) { release = false });
+            click(ClickEvent(event) {
+                release = false
+            });
         });
 
         button_release_event.connect((event) => {
-            click_release(ClickEvent(event) { release = true });
+            click_release(ClickEvent(event) {
+                release = true
+            });
         });
 
         scroll_event.connect((event) => {

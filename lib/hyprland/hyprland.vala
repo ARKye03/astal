@@ -8,7 +8,7 @@ public class Hyprland : Object {
     private static string RUN_DIR = GLib.Environment.get_user_runtime_dir();
 
     private static Hyprland _instance;
-    public static Hyprland? get_default() {
+    public static Hyprland ? get_default() {
         if (_instance != null)
             return _instance;
 
@@ -34,22 +34,28 @@ public class Hyprland : Object {
     }
 
     // monitors, workspaces, clients
-    private HashTable<int, Monitor> _monitors =
-        new HashTable<int, Monitor>((i) => i, (a, b) => a == b);
+    private HashTable <int, Monitor> _monitors =
+        new HashTable <int, Monitor>((i) => i, (a, b) => a == b);
 
-    private HashTable<int, Workspace> _workspaces =
-        new HashTable<int, Workspace>((i) => i, (a, b) => a == b);
+    private HashTable <int, Workspace> _workspaces =
+        new HashTable <int, Workspace>((i) => i, (a, b) => a == b);
 
-    private HashTable<string, Client> _clients =
-        new HashTable<string, Client>(str_hash, str_equal);
+    private HashTable <string, Client> _clients =
+        new HashTable <string, Client>(str_hash, str_equal);
 
-    public List<weak Monitor> monitors { owned get { return _monitors.get_values(); } }
-    public List<weak Workspace> workspaces { owned get { return _workspaces.get_values(); } }
-    public List<weak Client> clients { owned get { return _clients.get_values(); } }
+    public List <weak Monitor> monitors { owned get { return _monitors.get_values(); } }
+    public List <weak Workspace> workspaces { owned get { return _workspaces.get_values(); } }
+    public List <weak Client> clients { owned get { return _clients.get_values(); } }
 
-    public Monitor get_monitor(int id) { return _monitors.get(id); }
-    public Workspace get_workspace(int id) { return _workspaces.get(id); }
-    public Client? get_client(string address) {
+    public Monitor get_monitor(int id) {
+        return _monitors.get(id);
+    }
+
+    public Workspace get_workspace(int id) {
+        return _workspaces.get(id);
+    }
+
+    public Client ? get_client(string address) {
         if (address == "" || address == null)
             return null;
 
@@ -59,7 +65,7 @@ public class Hyprland : Object {
         return _clients.get(address);
     }
 
-    public Monitor? get_monitor_by_name(string name) {
+    public Monitor ? get_monitor_by_name(string name) {
         foreach (var mon in monitors) {
             if (mon.name == name)
                 return mon;
@@ -67,7 +73,7 @@ public class Hyprland : Object {
         return null;
     }
 
-    public Workspace? get_workspace_by_name(string name) {
+    public Workspace ? get_workspace_by_name(string name) {
         foreach (var ws in workspaces) {
             if (ws.name == name)
                 return ws;
@@ -80,9 +86,9 @@ public class Hyprland : Object {
     public Client focused_client { get; private set; }
 
     // other props
-    public List<Bind> binds {
+    public List <Bind> binds {
         owned get {
-            var list = new List<Bind>();
+            var list = new List <Bind>();
             try {
                 var arr = Json.from_string(message("j/binds")).get_array();
                 foreach (var b in arr.get_elements())
@@ -101,31 +107,32 @@ public class Hyprland : Object {
     }
 
     // signals
-    public signal void event (string event, string args);
+    public signal void event(string event, string args);
 
     // TODO: nag vaxry for fullscreenv2
     // public signal void fullscreen (bool fullscreen);
-    public signal void minimize (Client client, bool minimize);
-    public signal void floating (Client client, bool floating);
-    public signal void urgent (Client client);
-    public signal void client_moved (Client client, Workspace ws);
+    public signal void minimize(Client client, bool minimize);
+    public signal void floating(Client client, bool floating);
+    public signal void urgent(Client client);
+    public signal void client_moved(Client client, Workspace ws);
 
-    public signal void submap (string name);
-    public signal void keyboard_layout (string keyboard, string layout);
-    public signal void config_reloaded ();
+    public signal void submap(string name);
+    public signal void keyboard_layout(string keyboard, string layout);
+    public signal void config_reloaded();
 
     // state
-    public signal void client_added (Client client);
-    public signal void client_removed (string address);
-    public signal void workspace_added (Workspace workspace);
-    public signal void workspace_removed (int id);
-    public signal void monitor_added (Monitor monitor);
-    public signal void monitor_removed (int id);
+    public signal void client_added(Client client);
+    public signal void client_removed(string address);
+    public signal void workspace_added(Workspace workspace);
+    public signal void workspace_removed(int id);
+    public signal void monitor_added(Monitor monitor);
+    public signal void monitor_removed(int id);
 
     private SocketConnection socket2;
 
-    private SocketConnection? connection(string socket) {
+    private SocketConnection ? connection(string socket) {
         var path = RUN_DIR + "/hypr/" + HIS + "/." + socket + ".sock";
+
         try {
             return new SocketClient().connect(new UnixSocketAddress(path), null);
         } catch (Error err) {
@@ -136,20 +143,20 @@ public class Hyprland : Object {
 
     private void watch_socket(DataInputStream stream) {
         stream.read_line_async.begin(Priority.DEFAULT, null, (_, res) => {
-            try {
-                var line = stream.read_line_async.end(res);
-                handle_event.begin(line, (_, res) => {
-                    try {
-                        handle_event.end(res);
-                    } catch (Error err) {
-                        critical(err.message);
-                    }
-                });
-                watch_socket(stream);
-            } catch (Error err) {
-                critical(err.message);
-            }
-        });
+                try {
+                    var line = stream.read_line_async.end(res);
+                    handle_event.begin(line, (_, res) => {
+                        try {
+                            handle_event.end(res);
+                        } catch (Error err) {
+                            critical(err.message);
+                        }
+                    });
+                    watch_socket(stream);
+                } catch (Error err) {
+                    critical(err.message);
+                }
+            });
     }
 
     private void write_socket(
@@ -161,15 +168,17 @@ public class Hyprland : Object {
         if (conn != null) {
             conn.output_stream.write(message.data, null);
             stream = new DataInputStream(conn.input_stream);
-        } else {
+        }
+        else {
             stream = null;
             critical("could not write to the Hyprland socket");
         }
     }
 
     public string message(string message) {
-        SocketConnection? conn;
-        DataInputStream? stream;
+        SocketConnection ?conn;
+        DataInputStream ?stream;
+
         try {
             write_socket(message, out conn, out stream);
             if (stream != null && conn != null) {
@@ -184,12 +193,14 @@ public class Hyprland : Object {
     }
 
     public async string message_async(string message) {
-        SocketConnection? conn;
-        DataInputStream? stream;
+        SocketConnection ?conn;
+        DataInputStream ?stream;
+
         try {
             write_socket(message, out conn, out stream);
             if (stream != null && conn != null) {
                 var res = yield stream.read_upto_async("\x04", -1, Priority.DEFAULT, null, null);
+
                 conn.close(null);
                 return res;
             }
@@ -201,16 +212,16 @@ public class Hyprland : Object {
 
     public void dispatch(string dispatcher, string args) {
         var msg = "dispatch " + dispatcher + " " + args;
+
         message_async.begin(msg, (_, res) => {
-            var err = message_async.end(res);
-            if (err != "ok")
-                critical("dispatch error: %s", err);
-        });
+                var err = message_async.end(res);
+                if (err != "ok")
+                    critical("dispatch error: %s", err);
+            });
     }
 
     public void move_cursor(int x, int y) {
         dispatch("movecursor", x.to_string() + " " + y.to_string());
-
     }
 
     // TODO: nag vaxry to make socket events and hyprctl more consistent
@@ -253,10 +264,10 @@ public class Hyprland : Object {
 
         // focused
         focused_workspace = get_workspace((int)Json.from_string(message("j/activeworkspace"))
-            .get_object().get_member("id").get_int());
+                                          .get_object().get_member("id").get_int());
 
         focused_client = get_client(Json.from_string(message("j/activewindow"))
-            .get_object().get_member("address").get_string());
+                                    .get_object().get_member("address").get_string());
     }
 
     ~Hyprland() {
@@ -271,7 +282,9 @@ public class Hyprland : Object {
 
     public async void sync_monitors() throws Error {
         var str = yield message_async("j/monitors");
+
         var arr = Json.from_string(str).get_array();
+
         foreach (var obj in arr.get_elements()) {
             var id = (int)obj.get_object().get_int_member("id");
             var m = get_monitor(id);
@@ -282,19 +295,22 @@ public class Hyprland : Object {
 
     public async void sync_workspaces() throws Error {
         var str = yield message_async("j/workspaces");
+
         var arr = Json.from_string(str).get_array();
+
         foreach (var obj in arr.get_elements()) {
             var id = (int)obj.get_object().get_int_member("id");
             var ws = get_workspace(id);
             if (ws != null)
                 ws.sync(obj.get_object());
-
         }
     }
 
     public async void sync_clients() throws Error {
         var str = yield message_async("j/clients");
+
         var arr = Json.from_string(str).get_array();
+
         foreach (var obj in arr.get_elements()) {
             var addr = obj.get_object().get_string_member("address");
             var c = get_client(addr);
@@ -309,6 +325,7 @@ public class Hyprland : Object {
         switch (args[0]) {
             case "workspacev2":
                 yield sync_workspaces();
+
                 focused_workspace = get_workspace(int.parse(args[1]));
                 break;
 
@@ -325,6 +342,7 @@ public class Hyprland : Object {
             // TODO: nag vaxry for fullscreenv2 that passes address
             case "fullscreen":
                 yield sync_clients();
+
                 break;
 
             case "monitorremoved":
@@ -340,6 +358,7 @@ public class Hyprland : Object {
                 var mon = new Monitor();
                 _monitors.insert(id, mon);
                 yield sync_monitors();
+
                 monitor_added(mon);
                 notify_property("monitors");
                 break;
@@ -349,6 +368,7 @@ public class Hyprland : Object {
                 var ws = new Workspace();
                 _workspaces.insert(id, ws);
                 yield sync_workspaces();
+
                 workspace_added(ws);
                 notify_property("workspaces");
                 break;
@@ -364,15 +384,18 @@ public class Hyprland : Object {
             case "moveworkspacev2":
                 yield sync_workspaces();
                 yield sync_monitors();
+
                 break;
 
             case "renameworkspace":
                 yield sync_workspaces();
+
                 break;
 
             case "activespecial":
                 yield sync_monitors();
                 yield sync_workspaces();
+
                 break;
 
             case "activelayout":
@@ -383,12 +406,14 @@ public class Hyprland : Object {
             case "openwindow":
                 yield sync_clients();
                 yield sync_workspaces();
+
                 break;
 
             case "closewindow":
                 _clients.get(args[1]).removed();
                 _clients.remove(args[1]);
                 yield sync_workspaces();
+
                 client_removed(args[1]);
                 notify_property("clients");
                 break;
@@ -396,6 +421,7 @@ public class Hyprland : Object {
             case "movewindowv2":
                 yield sync_clients();
                 yield sync_workspaces();
+
                 var argv = args[1].split(",");
                 client_moved(get_client(argv[0]), get_workspace(int.parse(argv[1])));
                 get_client(argv[0]).moved_to(get_workspace(int.parse(argv[1])));
@@ -408,6 +434,7 @@ public class Hyprland : Object {
             case "changefloatingmode":
                 var argv = args[1].split(",");
                 yield sync_clients();
+
                 floating(get_client(argv[0]), argv[1] == "0");
                 break;
 
@@ -418,6 +445,7 @@ public class Hyprland : Object {
             case "minimize":
                 var argv = args[1].split(",");
                 yield sync_clients();
+
                 minimize(get_client(argv[0]), argv[1] == "0");
                 break;
 
@@ -428,12 +456,14 @@ public class Hyprland : Object {
                 _clients.insert(addr, client);
                 yield sync_clients();
                 yield sync_workspaces();
+
                 client_added(client);
                 notify_property("clients");
                 break;
 
             case "windowtitle":
                 yield sync_clients();
+
                 break;
 
             // TODO:

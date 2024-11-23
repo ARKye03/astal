@@ -32,6 +32,7 @@ public async void login_with_env(
     string[] env
 ) throws GLib.Error {
     string[] argv;
+
     Shell.parse_argv(cmd, out argv);
     try {
         yield new CreateSession(username).send();
@@ -59,7 +60,7 @@ public abstract class Request : Object {
     }
 
     private int bytes_to_int(Bytes bytes) {
-        uint8[] data = (uint8[]) bytes.get_data();
+        uint8[] data = (uint8[])bytes.get_data();
         int value = 0;
 
         for (int i = 0; i < data.length; i++) {
@@ -93,6 +94,7 @@ public abstract class Request : Object {
         var istream = conn.get_input_stream();
 
         var response_head = yield istream.read_bytes_async(4, Priority.DEFAULT, null);
+
         var response_length = bytes_to_int(response_head);
         var response_body = yield istream.read_bytes_async(response_length, Priority.DEFAULT, null);
 
@@ -106,8 +108,11 @@ public abstract class Request : Object {
 
         switch (type) {
             case Success.TYPE: return new Success(obj);
+
             case Error.TYPE: return new Error(obj);
+
             case AuthMessage.TYPE: return new AuthMessage(obj);
+
             default: throw new IOError.NOT_FOUND("unknown response type");
         }
     }
@@ -193,6 +198,7 @@ public class Error : Response {
          * This is not a fatal error, and is likely caused by incorrect credentials.
          */
         AUTH_ERROR,
+
         /**
          * A general error.
          * See the error description for more information.
@@ -202,7 +208,9 @@ public class Error : Response {
         internal static Type from_string(string str) throws IOError {
             switch (str) {
                 case "auth_error": return Type.AUTH_ERROR;
+
                 case "error": return Type.ERROR;
+
                 default: throw new IOError.FAILED(@"unknown error_type: $str");
             }
         }
@@ -229,15 +237,18 @@ public class AuthMessage : Response {
          * visible when they answer this question.
          */
         VISIBLE,
+
         /**
          * Indicates that input from the user should be
          * considered secret when they answer this question.
          */
         SECRET,
+
         /**
          * Indicates that this message is informative, not a question.
          */
         INFO,
+
         /**
          * Indicates that this message is an error, not a question.
          */
@@ -246,9 +257,13 @@ public class AuthMessage : Response {
         internal static Type from_string(string str) throws IOError {
             switch (str) {
                 case "visible": return VISIBLE;
+
                 case "secret": return Type.SECRET;
+
                 case "info": return Type.INFO;
+
                 case "error": return Type.ERROR;
+
                 default: throw new IOError.FAILED(@"unknown message_type: $str");
             }
         }

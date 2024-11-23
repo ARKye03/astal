@@ -1,15 +1,15 @@
-[DBus (name="org.freedesktop.DBus")]
+[DBus(name = "org.freedesktop.DBus")]
 private interface AstalMpris.DBusImpl : DBusProxy {
     public abstract string[] list_names() throws GLib.Error;
     public signal void name_owner_changed(string name, string old_owner, string new_owner);
 }
 
-[DBus (name="org.freedesktop.DBus.Properties")]
+[DBus(name = "org.freedesktop.DBus.Properties")]
 private interface AstalMpris.PropsIface : DBusProxy {
-    public abstract HashTable<string, Variant> get_all(string iface);
+    public abstract HashTable <string, Variant> get_all(string iface);
 }
 
-[DBus (name="org.mpris.MediaPlayer2")]
+[DBus(name = "org.mpris.MediaPlayer2")]
 private interface AstalMpris.IMpris : PropsIface {
     public abstract void raise() throws GLib.Error;
     public abstract void quit() throws GLib.Error;
@@ -25,7 +25,7 @@ private interface AstalMpris.IMpris : PropsIface {
     public abstract string[] supported_mime_types { owned get; }
 }
 
-[DBus (name="org.mpris.MediaPlayer2.Player")]
+[DBus(name = "org.mpris.MediaPlayer2.Player")]
 private interface AstalMpris.IPlayer : IMpris {
     public abstract void next() throws GLib.Error;
     public abstract void previous() throws GLib.Error;
@@ -43,7 +43,7 @@ private interface AstalMpris.IPlayer : IMpris {
     public abstract string loop_status { owned get; set; }
     public abstract double rate { get; set; }
     public abstract bool shuffle { get; set; }
-    public abstract HashTable<string,Variant> metadata { owned get; }
+    public abstract HashTable <string, Variant> metadata { owned get; }
     public abstract double volume { get; set; }
     public abstract int64 position { get; }
     public abstract double minimum_rate { get; set; }

@@ -21,26 +21,26 @@ typedef enum {
 
 G_DECLARE_FINAL_TYPE(AstalWpWp, astal_wp_wp, ASTAL_WP, WP, GObject)
 
-AstalWpWp* astal_wp_wp_get_default();
-AstalWpWp* astal_wp_get_default();
+AstalWpWp *astal_wp_wp_get_default();
+AstalWpWp * astal_wp_get_default();
 
-AstalWpAudio* astal_wp_wp_get_audio(AstalWpWp* self);
-AstalWpVideo* astal_wp_wp_get_video(AstalWpWp* self);
+AstalWpAudio * astal_wp_wp_get_audio(AstalWpWp *self);
+AstalWpVideo * astal_wp_wp_get_video(AstalWpWp *self);
 
-AstalWpEndpoint* astal_wp_wp_get_endpoint(AstalWpWp* self, guint id);
-GList* astal_wp_wp_get_endpoints(AstalWpWp* self);
+AstalWpEndpoint * astal_wp_wp_get_endpoint(AstalWpWp *self, guint id);
+GList * astal_wp_wp_get_endpoints(AstalWpWp *self);
 
-AstalWpDevice* astal_wp_wp_get_device(AstalWpWp* self, guint id);
-GList* astal_wp_wp_get_devices(AstalWpWp* self);
+AstalWpDevice * astal_wp_wp_get_device(AstalWpWp *self, guint id);
+GList * astal_wp_wp_get_devices(AstalWpWp *self);
 
-AstalWpEndpoint* astal_wp_wp_get_default_speaker(AstalWpWp* self);
-AstalWpEndpoint* astal_wp_wp_get_default_microphone(AstalWpWp* self);
+AstalWpEndpoint * astal_wp_wp_get_default_speaker(AstalWpWp *self);
+AstalWpEndpoint * astal_wp_wp_get_default_microphone(AstalWpWp *self);
 
-AstalWpScale astal_wp_wp_get_scale(AstalWpWp* self);
-void astal_wp_wp_set_scale(AstalWpWp* self, AstalWpScale scale);
+AstalWpScale astal_wp_wp_get_scale(AstalWpWp *self);
+void astal_wp_wp_set_scale(AstalWpWp *self, AstalWpScale scale);
 
-AstalWpVideo* astal_wp_video_new(AstalWpWp* wp);
-AstalWpAudio* astal_wp_audio_new(AstalWpWp* wp);
+AstalWpVideo * astal_wp_video_new(AstalWpWp *wp);
+AstalWpAudio * astal_wp_audio_new(AstalWpWp *wp);
 
 G_END_DECLS
 

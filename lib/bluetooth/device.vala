@@ -10,7 +10,7 @@ public class AstalBluetooth.Device : Object {
         this.proxy = proxy;
         this.object_path = (ObjectPath)proxy.g_object_path;
         proxy.g_properties_changed.connect((props) => {
-            var map = (HashTable<string, Variant>)props;
+            var map = (HashTable <string, Variant>)props;
             foreach (var key in map.get_keys()) {
                 var prop = kebab_case(key);
                 if (get_class().find_property(prop) != null) {

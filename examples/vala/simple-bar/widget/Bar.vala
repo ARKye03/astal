@@ -1,7 +1,7 @@
 class Workspaces : Gtk.Box {
     AstalHyprland.Hyprland hypr = AstalHyprland.get_default();
     public Workspaces() {
-        Astal.widget_set_class_names(this, {"Workspaces"});
+        Astal.widget_set_class_names(this, { "Workspaces" });
         hypr.notify["workspaces"].connect(sync);
         sync();
     }
@@ -23,8 +23,9 @@ class Workspaces : Gtk.Box {
         hypr.notify["focused-workspace"].connect(() => {
             var focused = hypr.focused_workspace == ws;
             if (focused) {
-                Astal.widget_set_class_names(btn, {"focused"});
-            } else {
+                Astal.widget_set_class_names(btn, { "focused" });
+            }
+            else {
                 Astal.widget_set_class_names(btn, {});
             }
         });
@@ -36,7 +37,7 @@ class Workspaces : Gtk.Box {
 
 class FocusedClient : Gtk.Box {
     public FocusedClient() {
-        Astal.widget_set_class_names(this, {"Focused"});
+        Astal.widget_set_class_names(this, { "Focused" });
         AstalHyprland.get_default().notify["focused-client"].connect(sync);
         sync();
     }
@@ -49,7 +50,9 @@ class FocusedClient : Gtk.Box {
         if (client == null)
             return;
 
-        var label = new Gtk.Label(client.title) { visible = true };
+        var label = new Gtk.Label(client.title) {
+            visible = true
+        };
         client.bind_property("title", label, "label", BindingFlags.SYNC_CREATE);
         add(label);
     }
@@ -59,7 +62,7 @@ class Media : Gtk.Box {
     AstalMpris.Mpris mpris = AstalMpris.get_default();
 
     public Media() {
-        Astal.widget_set_class_names(this, {"Media"});
+        Astal.widget_set_class_names(this, { "Media" });
         mpris.notify["players"].connect(sync);
         sync();
     }
@@ -79,7 +82,7 @@ class Media : Gtk.Box {
             valign = Gtk.Align.CENTER
         };
 
-        Astal.widget_set_class_names(cover, {"Cover"});
+        Astal.widget_set_class_names(cover, { "Cover" });
         player.bind_property("title", label, "label", BindingFlags.SYNC_CREATE, (_, src, ref trgt) => {
             var title = player.title;
             var artist = player.artist;
@@ -99,7 +102,7 @@ class Media : Gtk.Box {
 }
 
 class SysTray : Gtk.Box {
-    HashTable<string, Gtk.Widget> items = new HashTable<string, Gtk.Widget>(str_hash, str_equal);
+    HashTable <string, Gtk.Widget> items = new HashTable <string, Gtk.Widget>(str_hash, str_equal);
     AstalTray.Tray tray = AstalTray.get_default();
 
     public SysTray() {
@@ -144,7 +147,7 @@ class SysTray : Gtk.Box {
 
 class Wifi : Astal.Icon {
     public Wifi() {
-        Astal.widget_set_class_names(this, {"Wifi"});
+        Astal.widget_set_class_names(this, { "Wifi" });
         var wifi = AstalNetwork.get_default().wifi;
         wifi.bind_property("ssid", this, "tooltip-text", BindingFlags.SYNC_CREATE);
         wifi.bind_property("icon-name", this, "icon", BindingFlags.SYNC_CREATE);
@@ -153,12 +156,14 @@ class Wifi : Astal.Icon {
 
 class AudioSlider : Gtk.Box {
     Astal.Icon icon = new Astal.Icon();
-    Astal.Slider slider = new Astal.Slider() { hexpand = true };
+    Astal.Slider slider = new Astal.Slider() {
+        hexpand = true
+    };
 
     public AudioSlider() {
         add(icon);
         add(slider);
-        Astal.widget_set_class_names(this, {"AudioSlider"});
+        Astal.widget_set_class_names(this, { "AudioSlider" });
         Astal.widget_set_css(this, "min-width: 140px");
 
         var speaker = AstalWp.get_default().audio.default_speaker;
@@ -175,7 +180,7 @@ class Battery : Gtk.Box {
     public Battery() {
         add(icon);
         add(label);
-        Astal.widget_set_class_names(this, {"Battery"});
+        Astal.widget_set_class_names(this, { "Battery" });
 
         var bat = AstalBattery.get_default();
         bat.bind_property("is-present", this, "visible", BindingFlags.SYNC_CREATE);
@@ -201,7 +206,7 @@ class Time : Astal.Label {
         interval = AstalIO.Time.interval(1000, null);
         interval.now.connect(sync);
         destroy.connect(interval.cancel);
-        Astal.widget_set_class_names(this, {"Time"});
+        Astal.widget_set_class_names(this, { "Time" });
     }
 }
 
@@ -234,13 +239,13 @@ class Bar : Astal.Window {
     public Bar(Gdk.Monitor monitor) {
         Object(
             anchor: Astal.WindowAnchor.TOP
-                | Astal.WindowAnchor.LEFT
-                | Astal.WindowAnchor.RIGHT,
+            | Astal.WindowAnchor.LEFT
+            | Astal.WindowAnchor.RIGHT,
             exclusivity: Astal.Exclusivity.EXCLUSIVE,
             gdkmonitor: monitor
         );
 
-        Astal.widget_set_class_names(this, {"Bar"});
+        Astal.widget_set_class_names(this, { "Bar" });
 
         add(new Astal.CenterBox() {
             start_widget = new Left(),

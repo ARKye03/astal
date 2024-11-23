@@ -11,7 +11,8 @@ internal string kebab_case(string pascal_case) {
             }
 
             kebab_case.append_c((char)(c + 32));
-        } else {
+        }
+        else {
             kebab_case.append_c(c);
         }
     }

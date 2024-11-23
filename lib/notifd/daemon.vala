@@ -1,4 +1,4 @@
-[DBus (name = "org.freedesktop.Notifications")]
+[DBus(name = "org.freedesktop.Notifications")]
 internal class AstalNotifd.Daemon : Object {
     public static string name = "notifd";
     public static string vendor = "astal";
@@ -9,8 +9,8 @@ internal class AstalNotifd.Daemon : Object {
     private string cache_directory;
 
     private uint n_id = 1;
-    private HashTable<uint, Notification> notifs =
-        new HashTable<uint, Notification>((i) => i, (a, b) => a == b);
+    private HashTable <uint, Notification> notifs =
+        new HashTable <uint, Notification>((i) => i, (a, b) => a == b);
 
     private bool _ignore_timeout;
     public bool ignore_timeout {
@@ -39,6 +39,7 @@ internal class AstalNotifd.Daemon : Object {
     public void emit_resolved(uint id, ClosedReason reason) throws Error {
         resolved(id, reason);
     }
+
     public void emit_action_invoked(uint id, string action) throws Error {
         action_invoked(id, action);
     }
@@ -86,17 +87,18 @@ internal class AstalNotifd.Daemon : Object {
     public uint[] notification_ids() throws DBusError, IOError {
         var keys = notifs.get_keys();
         uint[] id = new uint[keys.length()];
+
         for (var i = 0; i < keys.length(); ++i)
             id[i] = keys.nth_data(i);
         return id;
     }
 
-    [DBus (visible = false)]
-    public List<weak Notification> notifications {
+    [DBus(visible = false)]
+    public List <weak Notification> notifications {
         owned get { return notifs.get_values(); }
     }
 
-    [DBus (visible = false)]
+    [DBus(visible = false)]
     public Notification get_notification(uint id) {
         return notifs.get(id);
     }
@@ -105,7 +107,7 @@ internal class AstalNotifd.Daemon : Object {
         return notifs.get(id).to_json_string();
     }
 
-    [DBus (name = "Notify")]
+    [DBus(name = "Notify")]
     public uint Notify(
         string app_name,
         uint replaces_id,
@@ -113,7 +115,7 @@ internal class AstalNotifd.Daemon : Object {
         string summary,
         string body,
         string[] actions,
-        HashTable<string, Variant> hints,
+        HashTable <string, Variant> hints,
         int expire_timeout
     ) throws DBusError, IOError {
         if (hints.get("image-data") != null) {
@@ -132,7 +134,7 @@ internal class AstalNotifd.Daemon : Object {
 
         // TODO: update existing Notification object when replaced
         var replaced = add_notification(new Notification(
-            app_name, id, app_icon, summary, body, actions, hints, expire_timeout
+                                            app_name, id, app_icon, summary, body, actions, hints, expire_timeout
         ));
 
         if (!ignore_timeout && expire_timeout > 0) {
@@ -168,11 +170,11 @@ internal class AstalNotifd.Daemon : Object {
         list.end_array();
 
         var obj = new Json.Builder()
-            .begin_object()
-            .set_member_name("notifications").add_value(list.get_root())
-            .set_member_name("ignore_timeout").add_boolean_value(ignore_timeout)
-            .set_member_name("dont_disturb").add_boolean_value(dont_disturb)
-            .end_object();
+                  .begin_object()
+                  .set_member_name("notifications").add_value(list.get_root())
+                  .set_member_name("ignore_timeout").add_boolean_value(ignore_timeout)
+                  .set_member_name("dont_disturb").add_boolean_value(dont_disturb)
+                  .end_object();
 
         try {
             if (!FileUtils.test(state_directory, FileTest.EXISTS))
@@ -204,10 +206,10 @@ internal class AstalNotifd.Daemon : Object {
     }
 
     public string[] get_capabilities() throws DBusError, IOError {
-        return {"action-icons", "actions", "body", "icon-static", "persistence", "sound"};
+        return { "action-icons", "actions", "body", "icon-static", "persistence", "sound" };
     }
 
-    private string? cache_image(Variant image, string app_name) {
+    private string ? cache_image(Variant image, string app_name) {
         int w = image.get_child_value(0).get_int32();
         int h = image.get_child_value(1).get_int32();
         int rs = image.get_child_value(2).get_int32();
@@ -217,7 +219,7 @@ internal class AstalNotifd.Daemon : Object {
 
         if (bps != 8) {
             warning("Can not cache image from %s. %s", app_name,
-                "Currently only RGB images with 8 bits per sample are supported.");
+                    "Currently only RGB images with 8 bits per sample are supported.");
             return null;
         }
 
@@ -234,7 +236,7 @@ internal class AstalNotifd.Daemon : Object {
                 File.new_for_path(cache_directory).make_directory_with_parents(null);
 
             var output_stream = File.new_for_path(file_name)
-                .replace(null, false, FileCreateFlags.NONE, null);
+                                .replace(null, false, FileCreateFlags.NONE, null);
 
             pixbuf.save_to_streamv(output_stream, "png", null, null, null);
             output_stream.close(null);

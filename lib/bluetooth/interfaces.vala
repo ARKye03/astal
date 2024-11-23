@@ -1,4 +1,4 @@
-[DBus (name = "org.bluez.Adapter1")]
+[DBus(name = "org.bluez.Adapter1")]
 private interface AstalBluetooth.IAdapter : DBusProxy {
     public abstract void remove_device(ObjectPath device) throws Error;
     public abstract void start_discovery() throws Error;
@@ -18,7 +18,7 @@ private interface AstalBluetooth.IAdapter : DBusProxy {
     public abstract uint pairable_timeout { get; set; }
 }
 
-[DBus (name = "org.bluez.Device1")]
+[DBus(name = "org.bluez.Device1")]
 private interface AstalBluetooth.IDevice : DBusProxy {
     public abstract void cancel_pairing() throws Error;
     public abstract async void connect() throws Error;
@@ -43,4 +43,3 @@ private interface AstalBluetooth.IDevice : DBusProxy {
     public abstract uint16 appearance { get; }
     public abstract uint32 class { get; }
 }
-

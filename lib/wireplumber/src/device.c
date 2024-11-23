@@ -45,7 +45,9 @@ static GParamSpec *astal_wp_device_properties[ASTAL_WP_DEVICE_N_PROPERTIES] = {
  * gets the id of this device
  *
  */
-guint astal_wp_device_get_id(AstalWpDevice *self) { return self->id; }
+guint astal_wp_device_get_id(AstalWpDevice *self) {
+    return self->id;
+}
 
 /**
  * astal_wp_device_get_description
@@ -54,7 +56,9 @@ guint astal_wp_device_get_id(AstalWpDevice *self) { return self->id; }
  * gets the description of this device
  *
  */
-const gchar *astal_wp_device_get_description(AstalWpDevice *self) { return self->description; }
+const gchar *astal_wp_device_get_description(AstalWpDevice *self) {
+    return self->description;
+}
 
 /**
  * astal_wp_device_get_icon
@@ -75,7 +79,9 @@ const gchar *astal_wp_device_get_icon(AstalWpDevice *self) {
  * gets the type of this device
  *
  */
-AstalWpDeviceType astal_wp_device_get_device_type(AstalWpDevice *self) { return self->type; }
+AstalWpDeviceType astal_wp_device_get_device_type(AstalWpDevice *self) {
+    return self->type;
+}
 
 /**
  * astal_wp_device_get_active_profile
@@ -84,7 +90,9 @@ AstalWpDeviceType astal_wp_device_get_device_type(AstalWpDevice *self) { return 
  * gets the currently active profile of this device
  *
  */
-gint astal_wp_device_get_active_profile(AstalWpDevice *self) { return self->active_profile; }
+gint astal_wp_device_get_active_profile(AstalWpDevice *self) {
+    return self->active_profile;
+}
 
 /**
  * astal_wp_device_set_active_profile
@@ -99,6 +107,7 @@ void astal_wp_device_set_active_profile(AstalWpDevice *self, int profile_id) {
 
     WpSpaPodBuilder *builder =
         wp_spa_pod_builder_new_object("Spa:Pod:Object:Param:Profile", "Profile");
+
     wp_spa_pod_builder_add_property(builder, "index");
     wp_spa_pod_builder_add_int(builder, profile_id);
     WpSpaPod *pod = wp_spa_pod_builder_end(builder);
@@ -132,6 +141,7 @@ AstalWpProfile *astal_wp_device_get_profile(AstalWpDevice *self, gint id) {
  */
 GList *astal_wp_device_get_profiles(AstalWpDevice *self) {
     AstalWpDevicePrivate *priv = astal_wp_device_get_instance_private(self);
+
     return g_hash_table_get_values(priv->profiles);
 }
 
@@ -143,21 +153,27 @@ static void astal_wp_device_get_property(GObject *object, guint property_id, GVa
         case ASTAL_WP_DEVICE_PROP_ID:
             g_value_set_uint(value, self->id);
             break;
+
         case ASTAL_WP_DEVICE_PROP_DESCRIPTION:
             g_value_set_string(value, self->description);
             break;
+
         case ASTAL_WP_DEVICE_PROP_ICON:
             g_value_set_string(value, self->icon);
             break;
+
         case ASTAL_WP_DEVICE_PROP_PROFILES:
             g_value_set_pointer(value, astal_wp_device_get_profiles(self));
             break;
+
         case ASTAL_WP_DEVICE_PROP_DEVICE_TYPE:
             g_value_set_enum(value, astal_wp_device_get_device_type(self));
             break;
+
         case ASTAL_WP_DEVICE_PROP_ACTIVE_PROFILE:
             g_value_set_int(value, self->active_profile);
             break;
+
         default:
             G_OBJECT_WARN_INVALID_PROPERTY_ID(object, property_id, pspec);
             break;
@@ -172,6 +188,7 @@ static void astal_wp_device_set_property(GObject *object, guint property_id, con
         case ASTAL_WP_DEVICE_PROP_ACTIVE_PROFILE:
             astal_wp_device_set_active_profile(self, g_value_get_int(value));
             break;
+
         default:
             G_OBJECT_WARN_INVALID_PROPERTY_ID(object, property_id, pspec);
             break;
@@ -180,11 +197,13 @@ static void astal_wp_device_set_property(GObject *object, guint property_id, con
 
 static void astal_wp_device_update_profiles(AstalWpDevice *self) {
     AstalWpDevicePrivate *priv = astal_wp_device_get_instance_private(self);
+
     g_hash_table_remove_all(priv->profiles);
 
     WpIterator *iter =
         wp_pipewire_object_enum_params_sync(WP_PIPEWIRE_OBJECT(priv->device), "EnumProfile", NULL);
     if (iter == NULL) return;
+
     GValue profile = G_VALUE_INIT;
     while (wp_iterator_next(iter, &profile)) {
         WpSpaPod *pod = g_value_get_boxed(&profile);
@@ -209,7 +228,9 @@ static void astal_wp_device_update_active_profile(AstalWpDevice *self) {
 
     WpIterator *iter =
         wp_pipewire_object_enum_params_sync(WP_PIPEWIRE_OBJECT(priv->device), "Profile", NULL);
+
     if (iter == NULL) return;
+
     GValue profile = G_VALUE_INIT;
     while (wp_iterator_next(iter, &profile)) {
         WpSpaPod *pod = g_value_get_boxed(&profile);
@@ -234,14 +255,17 @@ static void astal_wp_device_update_active_profile(AstalWpDevice *self) {
 static void astal_wp_device_params_changed(AstalWpDevice *self, const gchar *prop) {
     if (g_strcmp0(prop, "EnumProfile") == 0) {
         astal_wp_device_update_profiles(self);
-    } else if (g_strcmp0(prop, "Profile") == 0) {
+    }
+    else if (g_strcmp0(prop, "Profile") == 0) {
         astal_wp_device_update_active_profile(self);
     }
 }
 
 static void astal_wp_device_update_properties(AstalWpDevice *self) {
     AstalWpDevicePrivate *priv = astal_wp_device_get_instance_private(self);
+
     if (priv->device == NULL) return;
+
     self->id = wp_proxy_get_bound_id(WP_PROXY(priv->device));
     const gchar *description =
         wp_pipewire_object_get_property(WP_PIPEWIRE_OBJECT(priv->device), "device.description");
@@ -294,6 +318,7 @@ AstalWpDevice *astal_wp_device_create(WpDevice *device) {
 
 static void astal_wp_device_init(AstalWpDevice *self) {
     AstalWpDevicePrivate *priv = astal_wp_device_get_instance_private(self);
+
     priv->device = NULL;
 
     priv->profiles = g_hash_table_new_full(g_direct_hash, g_direct_equal, NULL, g_object_unref);
@@ -311,16 +336,19 @@ static void astal_wp_device_dispose(GObject *object) {
 
 static void astal_wp_device_finalize(GObject *object) {
     AstalWpDevice *self = ASTAL_WP_DEVICE(object);
+
     g_free(self->description);
     g_free(self->icon);
 }
 
 static void astal_wp_device_class_init(AstalWpDeviceClass *class) {
     GObjectClass *object_class = G_OBJECT_CLASS(class);
+
     object_class->dispose = astal_wp_device_dispose;
     object_class->finalize = astal_wp_device_finalize;
     object_class->get_property = astal_wp_device_get_property;
     object_class->set_property = astal_wp_device_set_property;
+
     /**
      * AstalWpDevice:id
      *
@@ -328,6 +356,7 @@ static void astal_wp_device_class_init(AstalWpDeviceClass *class) {
      */
     astal_wp_device_properties[ASTAL_WP_DEVICE_PROP_ID] =
         g_param_spec_uint("id", "id", "id", 0, UINT_MAX, 0, G_PARAM_READABLE);
+
     /**
      * AstalWpDevice:description
      *
@@ -335,6 +364,7 @@ static void astal_wp_device_class_init(AstalWpDeviceClass *class) {
      */
     astal_wp_device_properties[ASTAL_WP_DEVICE_PROP_DESCRIPTION] =
         g_param_spec_string("description", "description", "description", NULL, G_PARAM_READABLE);
+
     /**
      * AstalWpDevice:icon
      *
@@ -342,6 +372,7 @@ static void astal_wp_device_class_init(AstalWpDeviceClass *class) {
      */
     astal_wp_device_properties[ASTAL_WP_DEVICE_PROP_ICON] =
         g_param_spec_string("icon", "icon", "icon", NULL, G_PARAM_READABLE);
+
     /**
      * AstalWpDevice:device-type: (type AstalWpDeviceType)
      *
@@ -350,6 +381,7 @@ static void astal_wp_device_class_init(AstalWpDeviceClass *class) {
     astal_wp_device_properties[ASTAL_WP_DEVICE_PROP_DEVICE_TYPE] =
         g_param_spec_enum("device-type", "device-type", "device-type", ASTAL_WP_TYPE_DEVICE_TYPE, 1,
                           G_PARAM_READABLE);
+
     /**
      * AstalWpDevice:profiles: (type GList(AstalWpProfile)) (transfer container)
      *
@@ -357,6 +389,7 @@ static void astal_wp_device_class_init(AstalWpDeviceClass *class) {
      */
     astal_wp_device_properties[ASTAL_WP_DEVICE_PROP_PROFILES] =
         g_param_spec_pointer("profiles", "profiles", "profiles", G_PARAM_READABLE);
+
     /**
      * AstalWpDevice:active-profile-id
      *

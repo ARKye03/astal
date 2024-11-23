@@ -1,4 +1,4 @@
-[DBus (name = "org.freedesktop.UPower")]
+[DBus(name = "org.freedesktop.UPower")]
 private interface AstalBattery.IUPower : DBusProxy {
     public abstract ObjectPath[] enumerate_devices() throws Error;
     public abstract ObjectPath get_display_device() throws Error;
@@ -13,7 +13,7 @@ private interface AstalBattery.IUPower : DBusProxy {
     public abstract bool lis_is_present { get; }
 }
 
-[DBus (name = "org.freedesktop.UPower.Device")]
+[DBus(name = "org.freedesktop.UPower.Device")]
 private interface AstalBattery.IUPowerDevice : DBusProxy {
     // public abstract HistoryDataPoint[] get_history (string type, uint32 timespan, uint32 resolution) throws GLib.Error;
     // public abstract StatisticsDataPoint[] get_statistics (string type) throws GLib.Error;
@@ -56,7 +56,7 @@ private interface AstalBattery.IUPowerDevice : DBusProxy {
 //     double value;
 //     uint32 state;
 // }
-// 
+//
 // private struct AstalBattery.StatisticsDataPoint {
 //     double value;
 //     double accuracy;

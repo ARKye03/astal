@@ -1,5 +1,5 @@
 namespace AstalTray {
-[DBus (name="org.kde.StatusNotifierWatcher")]
+[DBus(name = "org.kde.StatusNotifierWatcher")]
 internal interface IWatcher : Object {
     public abstract string[] RegisteredStatusNotifierItems { owned get; }
     public abstract int ProtocolVersion { get; }
@@ -12,6 +12,7 @@ internal interface IWatcher : Object {
     public signal void StatusNotifierHostRegistered();
     public signal void StatusNotifierHostUnregistered();
 }
+
 /**
  * Get the singleton instance of [class@AstalTray.Tray]
  */
@@ -20,7 +21,7 @@ public Tray get_default() {
 }
 
 public class Tray : Object {
-    private static Tray? instance;
+    private static Tray ?instance;
 
     /**
      * Get the singleton instance of [class@AstalTray.Tray]
@@ -35,13 +36,13 @@ public class Tray : Object {
     private StatusNotifierWatcher watcher;
     private IWatcher proxy;
 
-    private HashTable<string, TrayItem> _items =
-        new HashTable<string, TrayItem>(str_hash, str_equal);
+    private HashTable <string, TrayItem> _items =
+        new HashTable <string, TrayItem>(str_hash, str_equal);
 
     /**
      * List of currently registered tray items
      */
-    public List<weak TrayItem> items { owned get { return _items.get_values(); }}
+    public List <weak TrayItem> items { owned get { return _items.get_values(); } }
 
     /**
      * emitted when a new tray item was added.
@@ -74,7 +75,6 @@ public class Tray : Object {
         } catch (Error err) {
             critical(err.message);
         }
-
     }
 
     private void start_watcher(DBusConnection conn) {
@@ -94,29 +94,30 @@ public class Tray : Object {
 
         try {
             proxy = Bus.get_proxy_sync(BusType.SESSION,
-                "org.kde.StatusNotifierWatcher",
-                "/StatusNotifierWatcher"); 
+                                       "org.kde.StatusNotifierWatcher",
+                                       "/StatusNotifierWatcher");
 
             proxy.StatusNotifierItemRegistered.connect(on_item_register);
             proxy.StatusNotifierItemUnregistered.connect(on_item_unregister);
 
             proxy.notify["g-name-owner"].connect(() => {
-                _items.foreach((service, _) => {
-                    item_removed(service);
+                    _items.foreach((service, _) => {
+                        item_removed(service);
+                    });
+
+                    _items.remove_all();
+
+                    if (proxy != null) {
+                        foreach (string item in proxy.RegisteredStatusNotifierItems) {
+                            on_item_register(item);
+                        }
+                    }
+                    else {
+                        foreach (string item in watcher.RegisteredStatusNotifierItems) {
+                            on_item_register(item);
+                        }
+                    }
                 });
-
-                _items.remove_all();
-
-                if(proxy != null) {
-                    foreach (string item in proxy.RegisteredStatusNotifierItems) {
-                        on_item_register(item);
-                    }
-                } else {
-                    foreach (string item in watcher.RegisteredStatusNotifierItems) {
-                        on_item_register(item);
-                    }
-                }
-            });
 
             foreach (string item in proxy.RegisteredStatusNotifierItems) {
                 on_item_register(item);
@@ -133,9 +134,9 @@ public class Tray : Object {
         var parts = service.split("/", 2);
         TrayItem item = new TrayItem(parts[0], "/" + parts[1]);
         item.ready.connect(() => {
-            _items.set(service, item);
-            item_added(service);
-        });
+                _items.set(service, item);
+                item_added(service);
+            });
     }
 
     private void on_item_unregister(string service) {

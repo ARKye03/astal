@@ -1,13 +1,13 @@
 namespace AstalHyprland {
 public class Workspace : Object {
-    public signal void removed ();
+    public signal void removed();
 
-    public List<weak Client> _clients = new List<weak Client>();
+    public List <weak Client> _clients = new List <weak Client>();
 
     public int id { get; private set; }
     public string name { get; private set; }
     public Monitor monitor { get; private set; }
-    public List<weak Client> clients { owned get { return _clients.copy(); } }
+    public List <weak Client> clients { owned get { return _clients.copy(); } }
     public bool has_fullscreen { get; private set; }
     public Client last_client { get; private set; }
 
@@ -17,9 +17,9 @@ public class Workspace : Object {
         this.monitor = monitor;
     }
 
-    internal List<weak Client> filter_clients() {
+    internal List <weak Client> filter_clients() {
         var hyprland = Hyprland.get_default();
-        var list = new List<weak Client>();
+        var list = new List <weak Client>();
         foreach (var client in hyprland.clients) {
             if (client.workspace == this) {
                 list.append(client);

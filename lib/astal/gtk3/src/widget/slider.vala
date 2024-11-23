@@ -5,7 +5,7 @@ public class Astal.Slider : Gtk.Scale {
     /**
      * Corresponds to [property@Gtk.Orientable :orientation].
      */
-    [CCode (notify = false)]
+    [CCode(notify = false)]
     public bool vertical {
         get { return orientation == Gtk.Orientation.VERTICAL; }
         set { orientation = value ? Gtk.Orientation.VERTICAL : Gtk.Orientation.HORIZONTAL; }
@@ -20,7 +20,7 @@ public class Astal.Slider : Gtk.Scale {
         draw_value = false;
 
         if (adjustment == null)
-            adjustment = new Gtk.Adjustment(0,0,0,0,0,0);
+            adjustment = new Gtk.Adjustment(0, 0, 0, 0, 0, 0);
 
         if (max == 0 && min == 0) {
             max = 1;

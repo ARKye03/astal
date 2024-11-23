@@ -13,8 +13,8 @@ public struct AstalNotifd.Action {
  * Class representing a notification.
  */
 public class AstalNotifd.Notification : Object {
-    private List<Action?> _actions;
-    private HashTable<string, Variant> hints;
+    private List <Action ?> _actions;
+    private HashTable <string, Variant> hints;
 
     /** Unix time of when the notification was sent. */
     public int64 time { internal set; get; }
@@ -42,7 +42,7 @@ public class AstalNotifd.Notification : Object {
      *
      * Can be invoked by calling [method@AstalNotifd.Notification.invoke] with the action's id.
      */
-    public List<Action?> actions { get { return _actions; } }
+    public List <Action ?> actions { get { return _actions; } }
 
     /** Path of an image  */
     public string image { get { return get_str_hint("image-path"); } }
@@ -98,7 +98,7 @@ public class AstalNotifd.Notification : Object {
         string summary,
         string body,
         string[] actions,
-        HashTable<string, Variant> hints,
+        HashTable <string, Variant> hints,
         int expire_timeout
     ) {
         Object(
@@ -112,7 +112,7 @@ public class AstalNotifd.Notification : Object {
         );
 
         this.hints = hints;
-        _actions = new List<Action?>();
+        _actions = new List <Action ?>();
         for (var i = 0; i < actions.length; i += 2) {
             _actions.append(Action() {
                 id = actions[i],
@@ -121,7 +121,7 @@ public class AstalNotifd.Notification : Object {
         }
     }
 
-    public Variant? get_hint(string hint) {
+    public Variant ? get_hint(string hint) {
         return hints.contains(hint) ? hints.get(hint) : null;
     }
 
@@ -171,7 +171,10 @@ public class AstalNotifd.Notification : Object {
     /**
      * Resolve this notification with [enum@AstalNotifd.ClosedReason.DISMISSED_BY_USER].
      */
-    public void dismiss() { dismissed(); }
+    public void dismiss() {
+        dismissed();
+    }
+
     internal signal void dismissed();
 
     /**
@@ -181,36 +184,47 @@ public class AstalNotifd.Notification : Object {
      * by the user. If for example this notification persists through the lifetime
      * of the sending program this action will have no effect.
      */
-    public void invoke(string action_id) { invoked(action_id); }
+    public void invoke(string action_id) {
+        invoked(action_id);
+    }
 
     internal Notification.from_json(Json.Object root) throws GLib.Error {
         foreach (var key in root.get_members()) {
             var node = root.get_member(key);
             switch (key) {
                 case "id": id = (uint)node.get_int(); break;
+
                 case "time": time = node.get_int(); break;
+
                 case "expire_timeout": expire_timeout = (int)node.get_int(); break;
+
                 case "app_name": app_name = node.get_string(); break;
+
                 case "app_icon": app_icon = node.get_string(); break;
+
                 case "summary": summary = node.get_string(); break;
+
                 case "body": body = node.get_string(); break;
+
                 case "hints":
-                    hints = new HashTable<string, Variant>(str_hash, str_equal);
+                    hints = new HashTable <string, Variant>(str_hash, str_equal);
                     var obj = node.get_object();
                     foreach (var hint in obj.get_members()) {
                         hints.set(hint, Json.gvariant_deserialize(obj.get_member(hint), null));
                     }
                     break;
+
                 case "actions":
-                    _actions = new List<Action?>();
+                    _actions = new List <Action ?>();
                     for (var i = 0; i < node.get_array().get_length(); ++i) {
                         var o = node.get_array().get_object_element(i);
                         _actions.append(Action() {
-                            id = o.get_member("id").get_string(),
-                            label = o.get_member("label").get_string()
-                        });
+                        id = o.get_member("id").get_string(),
+                        label = o.get_member("label").get_string()
+                    });
                     }
                     break;
+
                 default: break;
             }
         }
@@ -223,7 +237,7 @@ public class AstalNotifd.Notification : Object {
     }
 
     internal string to_json_string() {
-    	var generator = new Json.Generator();
+        var generator = new Json.Generator();
         generator.set_root(to_json());
         return generator.to_data(null);
     }
@@ -239,17 +253,17 @@ public class AstalNotifd.Notification : Object {
         acts.end_array();
 
         return new Json.Builder()
-            .begin_object()
-            .set_member_name("id").add_int_value(id)
-            .set_member_name("time").add_int_value(time)
-            .set_member_name("expire_timeout").add_int_value(expire_timeout)
-            .set_member_name("app_name").add_string_value(app_name)
-            .set_member_name("app_icon").add_string_value(app_icon)
-            .set_member_name("summary").add_string_value(summary)
-            .set_member_name("body").add_string_value(body)
-            .set_member_name("actions").add_value(acts.get_root())
-            .set_member_name("hints").add_value(Json.gvariant_serialize(hints))
-            .end_object()
-            .get_root();
+               .begin_object()
+               .set_member_name("id").add_int_value(id)
+               .set_member_name("time").add_int_value(time)
+               .set_member_name("expire_timeout").add_int_value(expire_timeout)
+               .set_member_name("app_name").add_string_value(app_name)
+               .set_member_name("app_icon").add_string_value(app_icon)
+               .set_member_name("summary").add_string_value(summary)
+               .set_member_name("body").add_string_value(body)
+               .set_member_name("actions").add_value(acts.get_root())
+               .set_member_name("hints").add_value(Json.gvariant_serialize(hints))
+               .end_object()
+               .get_root();
     }
 }

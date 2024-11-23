@@ -2,9 +2,9 @@
  * Get the singleton instance of [class@AstalNotifd.Notifd]
  */
 namespace AstalNotifd {
-    public Notifd get_default() {
-        return Notifd.get_default();
-    }
+public Notifd get_default() {
+    return Notifd.get_default();
+}
 }
 
 /**
@@ -69,7 +69,7 @@ public class AstalNotifd.Notifd : Object {
     /**
      * List of currently unresolved notifications.
      */
-    public List<weak Notification> notifications {
+    public List <weak Notification> notifications {
         owned get { return proxy != null ? proxy.notifications : daemon.notifications; }
     }
 
@@ -102,7 +102,7 @@ public class AstalNotifd.Notifd : Object {
 
     construct {
         // hack to make it synchronous
-        MainLoop? loop = null;
+        MainLoop ?loop = null;
 
         if (!MainContext.default().is_owner()) {
             loop = new MainLoop();
@@ -128,7 +128,8 @@ public class AstalNotifd.Notifd : Object {
 
         if (loop != null) {
             loop.run();
-        } else {
+        }
+        else {
             while (!done) {
                 MainContext.default().iteration(false);
             }
@@ -159,7 +160,8 @@ public class AstalNotifd.Notifd : Object {
 
         if (proxy.start()) {
             active(ActiveType.PROXY);
-        } else {
+        }
+        else {
             return;
         }
 

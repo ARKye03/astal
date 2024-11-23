@@ -1,8 +1,8 @@
 namespace AstalBattery {
-    /** Get the DisplayDevice. */
-    public Device get_default() {
-        return Device.get_default();
-    }
+/** Get the DisplayDevice. */
+public Device get_default() {
+    return Device.get_default();
+}
 }
 
 /**
@@ -12,7 +12,7 @@ public class AstalBattery.Device : Object {
     private static Device display_device;
 
     /** Get the DisplayDevice. */
-    public static Device? get_default() {
+    public static Device ? get_default() {
         if (display_device != null) {
             return display_device;
         }
@@ -144,7 +144,7 @@ public class AstalBattery.Device : Object {
      *
      * This property is only valid if [property@AstalBattery.Device:device_type] is [enum@AstalBattery.Type.BATTERY].
      */
-    public int64 time_to_full { get; private set;}
+    public int64 time_to_full { get; private set; }
 
     /**
      * The amount of energy left in the power source expressed as a percentage between 0 and 1.
@@ -281,11 +281,13 @@ public class AstalBattery.Device : Object {
 
         if (!is_battery) {
             battery_icon_name = "battery-missing-symbolic";
-        } else if (percentage >= 0.95 && charging) {
+        }
+        else if (percentage >= 0.95 && charging) {
             battery_icon_name = "battery-level-100-charged-symbolic";
-        } else {
+        }
+        else {
             var state = charging ? "-charging" : "";
-            var level = (int)Math.round(percentage * 10)*10;
+            var level = (int)Math.round(percentage * 10) * 10;
             battery_icon_name = @"battery-level-$level$state-symbolic";
         }
 
@@ -294,7 +296,7 @@ public class AstalBattery.Device : Object {
     }
 }
 
-[CCode (type_signature = "u")]
+[CCode(type_signature = "u")]
 public enum AstalBattery.State {
     UNKNOWN,
     CHARGING,
@@ -305,7 +307,7 @@ public enum AstalBattery.State {
     PENDING_DISCHARGE,
 }
 
-[CCode (type_signature = "u")]
+[CCode(type_signature = "u")]
 public enum AstalBattery.Technology {
     UNKNOWN,
     LITHIUM_ION,
@@ -316,7 +318,7 @@ public enum AstalBattery.Technology {
     NICKEL_METAL_HYDRIDE,
 }
 
-[CCode (type_signature = "u")]
+[CCode(type_signature = "u")]
 public enum AstalBattery.WarningLevel {
     UNKNOWN,
     NONE,
@@ -326,7 +328,7 @@ public enum AstalBattery.WarningLevel {
     ACTION,
 }
 
-[CCode (type_signature = "u")]
+[CCode(type_signature = "u")]
 public enum AstalBattery.BatteryLevel {
     UNKNOWN,
     NONE,
@@ -337,7 +339,7 @@ public enum AstalBattery.BatteryLevel {
     FULL,
 }
 
-[CCode (type_signature = "u")]
+[CCode(type_signature = "u")]
 public enum AstalBattery.Type {
     UNKNOWN,
     LINE_POWER,
@@ -370,87 +372,122 @@ public enum AstalBattery.Type {
     BLUETOOTH_GENERIC;
 
     // TODO: add more icon names
-    internal string? get_icon_name () {
+    internal string ? get_icon_name() {
         switch (this) {
             case UPS:
                 return "uninterruptible-power-supply";
+
             case MOUSE:
                 return "input-mouse";
+
             case KEYBOARD:
                 return "input-keyboard";
+
             case PDA:
             case PHONE:
                 return "phone";
+
             case MEDIA_PLAYER:
                 return "multimedia-player";
+
             case TABLET:
             case PEN:
                 return "input-tablet";
+
             case GAMING_INPUT:
                 return "input-gaming";
+
             default:
                 return null;
         }
     }
 
-    internal unowned string? get_name () {
+    internal unowned string ? get_name() {
         switch (this) {
             case LINE_POWER:
                 return "Plugged In";
+
             case BATTERY:
                 return "Battery";
+
             case UPS:
                 return "UPS";
+
             case MONITOR:
                 return "Display";
+
             case MOUSE:
                 return "Mouse";
+
             case KEYBOARD:
                 return "Keyboard";
+
             case PDA:
                 return "PDA";
+
             case PHONE:
                 return "Phone";
+
             case MEDIA_PLAYER:
                 return "Media Player";
+
             case TABLET:
                 return "Tablet";
+
             case COMPUTER:
                 return "Computer";
+
             case GAMING_INPUT:
                 return "Controller";
+
             case PEN:
                 return "Pen";
+
             case TOUCHPAD:
                 return "Touchpad";
+
             case MODEM:
                 return "Modem";
+
             case NETWORK:
                 return "Network";
+
             case HEADSET:
                 return "Headset";
+
             case SPEAKERS:
                 return "Speakers";
+
             case HEADPHONES:
                 return "Headphones";
+
             case VIDEO:
                 return "Video";
+
             case OTHER_AUDIO:
                 return "Other Audio";
+
             case REMOVE_CONTROL:
                 return "Remove Control";
+
             case PRINTER:
                 return "Printer";
+
             case SCANNER:
                 return "Scanner";
+
             case CAMERA:
                 return "Camera";
+
             case WEARABLE:
                 return "Wearable";
+
             case TOY:
                 return "Toy";
+
             case BLUETOOTH_GENERIC:
                 return "Bluetooth Generic";
+
             default:
                 return "Unknown";
         }

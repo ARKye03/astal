@@ -15,6 +15,7 @@ public interface Application : Object {
 
     public abstract string instance_name { owned get; construct set; }
     public abstract void acquire_socket() throws Error;
+
     public virtual void request(string msg, SocketConnection conn) throws Error {
         write_sock.begin(conn, @"missing response implementation on $instance_name");
     }
@@ -59,16 +60,16 @@ public SocketService acquire_socket(Application app, out string sock) throws Err
     );
 
     service.incoming.connect((conn) => {
-        read_sock.begin(conn, (_, res) => {
-            try {
-                string message = read_sock.end(res);
-                app.request(message != null ? message.strip() : "", conn);
-            } catch (Error err) {
-                critical(err.message);
-            }
+            read_sock.begin(conn, (_, res) => {
+                try {
+                    string message = read_sock.end(res);
+                    app.request(message != null ? message.strip() : "", conn);
+                } catch (Error err) {
+                    critical(err.message);
+                }
+            });
+            return false;
         });
-        return false;
-    });
 
     return service;
 }
@@ -77,8 +78,8 @@ public SocketService acquire_socket(Application app, out string sock) throws Err
  * Get a list of running Astal.Application instances.
  * It is the equivalent of `astal --list`.
  */
-public static List<string> get_instances() {
-    var list = new List<string>();
+public static List <string> get_instances() {
+    var list = new List <string>();
     var prefix = "io.Astal.";
 
     try {
@@ -172,14 +173,14 @@ public async void write_sock(SocketConnection conn, string response) throws IOEr
     yield conn.output_stream.write_async(@"$response\x04".data, Priority.DEFAULT);
 }
 
-[DBus (name="io.Astal.Application")]
+[DBus(name = "io.Astal.Application")]
 private interface IApplication : DBusProxy {
     public abstract void quit() throws GLib.Error;
     public abstract void inspector() throws GLib.Error;
     public abstract void toggle_window(string window) throws GLib.Error;
 }
 
-[DBus (name="org.freedesktop.DBus")]
+[DBus(name = "org.freedesktop.DBus")]
 private interface DBusImpl : DBusProxy {
     public abstract string[] list_names() throws Error;
 }

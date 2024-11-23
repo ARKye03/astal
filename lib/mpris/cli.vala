@@ -3,7 +3,7 @@ static bool help;
 static bool version;
 static bool list;
 static bool raw;
-[CCode (array_length = false, array_null_terminated = true)]
+[CCode(array_length = false, array_null_terminated = true)]
 static string[] players;
 
 const OptionEntry[] options = {
@@ -60,7 +60,7 @@ int main(string[] argv) {
     }
 
     var mpris = new Mpris();
-    var mpris_players = new List<Player>();
+    var mpris_players = new List <Player>();
 
     if (list) {
         foreach (var p in mpris.players)
@@ -72,7 +72,8 @@ int main(string[] argv) {
     if (players.length > 0) {
         foreach (var name in players)
             mpris_players.append(new Player(name));
-    } else {
+    }
+    else {
         foreach (var p in mpris.players)
             mpris_players.append(p);
     }
@@ -179,30 +180,31 @@ int main(string[] argv) {
 
 Json.Node to_json(Player p) {
     var uris = new Json.Builder().begin_array();
+
     foreach (var uri in p.supported_uri_schemes)
         uris.add_string_value(uri);
 
     uris.end_array();
 
     return new Json.Builder().begin_object()
-        .set_member_name("bus_name").add_string_value(p.bus_name)
-        .set_member_name("available").add_boolean_value(p.available)
-        .set_member_name("identity").add_string_value(p.identity)
-        .set_member_name("entry").add_string_value(p.entry)
-        .set_member_name("supported_uri_schemes").add_value(uris.get_root())
-        .set_member_name("loop_status").add_string_value(p.loop_status.to_string())
-        .set_member_name("shuffle_status").add_string_value(p.shuffle_status.to_string())
-        .set_member_name("rate").add_double_value(p.rate)
-        .set_member_name("volume").add_double_value(p.volume)
-        .set_member_name("position").add_double_value(p.position)
-        .set_member_name("cover_art").add_string_value(p.cover_art)
-        .set_member_name("metadata").add_value(Json.gvariant_serialize(
-            p.metadata != null ? p.metadata : new HashTable<string, Variant>(str_hash, str_equal)))
-        .end_object()
-        .get_root();
+           .set_member_name("bus_name").add_string_value(p.bus_name)
+           .set_member_name("available").add_boolean_value(p.available)
+           .set_member_name("identity").add_string_value(p.identity)
+           .set_member_name("entry").add_string_value(p.entry)
+           .set_member_name("supported_uri_schemes").add_value(uris.get_root())
+           .set_member_name("loop_status").add_string_value(p.loop_status.to_string())
+           .set_member_name("shuffle_status").add_string_value(p.shuffle_status.to_string())
+           .set_member_name("rate").add_double_value(p.rate)
+           .set_member_name("volume").add_double_value(p.volume)
+           .set_member_name("position").add_double_value(p.position)
+           .set_member_name("cover_art").add_string_value(p.cover_art)
+           .set_member_name("metadata").add_value(Json.gvariant_serialize(
+                                                      p.metadata != null ? p.metadata : new HashTable <string, Variant>(str_hash, str_equal)))
+           .end_object()
+           .get_root();
 }
 
-void print_players(List<weak Player> players) {
+void print_players(List <weak Player> players) {
     var json = new Json.Builder().begin_array();
 
     foreach (var p in players)
@@ -219,18 +221,18 @@ int do_monitor(Mpris mpris) {
     }
 
     mpris.player_added.connect((player) => {
-        player.notify.connect(() => print_players(mpris.players));
-    });
+            player.notify.connect(() => print_players(mpris.players));
+        });
 
     mpris.player_closed.connect(() => {
-        print_players(mpris.players);
-    });
+            print_players(mpris.players);
+        });
 
     new MainLoop(null, false).run();
     return 0;
 }
 
-int do_position(Player player, string? arg) {
+int do_position(Player player, string ?arg) {
     if (arg == null) {
         stderr.printf("missing position argument\n");
         return 1;
@@ -256,7 +258,7 @@ int do_position(Player player, string? arg) {
     return 0;
 }
 
-int do_volume(Player player, string? arg) {
+int do_volume(Player player, string ?arg) {
     if (arg == null) {
         stderr.printf("missing volume argument\n");
         return 1;
@@ -281,7 +283,7 @@ int do_volume(Player player, string? arg) {
     return 0;
 }
 
-int do_loop(Player player, string? arg) {
+int do_loop(Player player, string ?arg) {
     if (arg == null) {
         player.loop();
         return 0;
@@ -291,12 +293,15 @@ int do_loop(Player player, string? arg) {
         case "None":
             player.loop_status = Loop.NONE;
             break;
+
         case "Track":
             player.loop_status = Loop.TRACK;
             break;
+
         case "Playlist":
             player.loop_status = Loop.PLAYLIST;
             break;
+
         default:
             stderr.printf(@"unknown shuffle status \"$arg\"");
             return 1;
@@ -305,7 +310,7 @@ int do_loop(Player player, string? arg) {
     return 0;
 }
 
-int do_shuffle(Player player, string? arg) {
+int do_shuffle(Player player, string ?arg) {
     if (arg == null) {
         player.shuffle();
         return 1;
@@ -315,12 +320,15 @@ int do_shuffle(Player player, string? arg) {
         case "On":
             player.shuffle_status = Shuffle.ON;
             break;
+
         case "Off":
             player.shuffle_status = Shuffle.OFF;
             break;
+
         case "Toggle":
             player.shuffle();
             break;
+
         default:
             stderr.printf(@"unknown shuffle status \"$arg\"");
             return 1;

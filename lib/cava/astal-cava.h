@@ -24,46 +24,46 @@ typedef enum {
 
 G_DECLARE_FINAL_TYPE(AstalCavaCava, astal_cava_cava, ASTAL_CAVA, CAVA, GObject)
 
-AstalCavaCava* astal_cava_cava_get_default();
-AstalCavaCava* astal_cava_get_default();
+AstalCavaCava *astal_cava_cava_get_default();
+AstalCavaCava * astal_cava_get_default();
 
-gboolean astal_cava_cava_get_active(AstalCavaCava* self);
-void astal_cava_cava_set_active(AstalCavaCava* self, gboolean active);
+gboolean astal_cava_cava_get_active(AstalCavaCava *self);
+void astal_cava_cava_set_active(AstalCavaCava *self, gboolean active);
 
-GArray* astal_cava_cava_get_values(AstalCavaCava* self);
+GArray * astal_cava_cava_get_values(AstalCavaCava *self);
 
-gint astal_cava_cava_get_bars(AstalCavaCava* self);
-void astal_cava_cava_set_bars(AstalCavaCava* self, gint bars);
+gint astal_cava_cava_get_bars(AstalCavaCava *self);
+void astal_cava_cava_set_bars(AstalCavaCava *self, gint bars);
 
-gboolean astal_cava_cava_get_autosens(AstalCavaCava* self);
-void astal_cava_cava_set_autosens(AstalCavaCava* self, gboolean autosens);
+gboolean astal_cava_cava_get_autosens(AstalCavaCava *self);
+void astal_cava_cava_set_autosens(AstalCavaCava *self, gboolean autosens);
 
-gboolean astal_cava_cava_get_stereo(AstalCavaCava* self);
-void astal_cava_cava_set_stereo(AstalCavaCava* self, gboolean stereo);
+gboolean astal_cava_cava_get_stereo(AstalCavaCava *self);
+void astal_cava_cava_set_stereo(AstalCavaCava *self, gboolean stereo);
 
-gdouble astal_cava_cava_get_noise_reduction(AstalCavaCava* self);
-void astal_cava_cava_set_noise_reduction(AstalCavaCava* self, gdouble noise);
+gdouble astal_cava_cava_get_noise_reduction(AstalCavaCava *self);
+void astal_cava_cava_set_noise_reduction(AstalCavaCava *self, gdouble noise);
 
-gint astal_cava_cava_get_framerate(AstalCavaCava* self);
-void astal_cava_cava_set_framerate(AstalCavaCava* self, gint framerate);
+gint astal_cava_cava_get_framerate(AstalCavaCava *self);
+void astal_cava_cava_set_framerate(AstalCavaCava *self, gint framerate);
 
-AstalCavaInput astal_cava_cava_get_input(AstalCavaCava* self);
-void astal_cava_cava_set_input(AstalCavaCava* self, AstalCavaInput input);
+AstalCavaInput astal_cava_cava_get_input(AstalCavaCava *self);
+void astal_cava_cava_set_input(AstalCavaCava *self, AstalCavaInput input);
 
-gchar* astal_cava_cava_get_source(AstalCavaCava* self);
-void astal_cava_cava_set_source(AstalCavaCava* self, const gchar* source);
+gchar * astal_cava_cava_get_source(AstalCavaCava *self);
+void astal_cava_cava_set_source(AstalCavaCava *self, const gchar *source);
 
-gint astal_cava_cava_get_channels(AstalCavaCava* self);
-void astal_cava_cava_set_channels(AstalCavaCava* self, gint channels);
+gint astal_cava_cava_get_channels(AstalCavaCava *self);
+void astal_cava_cava_set_channels(AstalCavaCava *self, gint channels);
 
-gint astal_cava_cava_get_low_cutoff(AstalCavaCava* self);
-void astal_cava_cava_set_low_cutoff(AstalCavaCava* self, gint low_cutoff);
+gint astal_cava_cava_get_low_cutoff(AstalCavaCava *self);
+void astal_cava_cava_set_low_cutoff(AstalCavaCava *self, gint low_cutoff);
 
-gint astal_cava_cava_get_high_cutoff(AstalCavaCava* self);
-void astal_cava_cava_set_high_cutoff(AstalCavaCava* self, gint high_cutoff);
+gint astal_cava_cava_get_high_cutoff(AstalCavaCava *self);
+void astal_cava_cava_set_high_cutoff(AstalCavaCava *self, gint high_cutoff);
 
-gint astal_cava_cava_get_samplerate(AstalCavaCava* self);
-void astal_cava_cava_set_samplerate(AstalCavaCava* self, gint samplerate);
+gint astal_cava_cava_get_samplerate(AstalCavaCava *self);
+void astal_cava_cava_set_samplerate(AstalCavaCava *self, gint samplerate);
 
 G_END_DECLS
 

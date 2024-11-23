@@ -1,10 +1,10 @@
 namespace AstalBluetooth {
-    /**
-     * Gets the default singleton Bluetooth object.
-     */
-    public Bluetooth get_default() {
-        return Bluetooth.get_default();
-    }
+/**
+ * Gets the default singleton Bluetooth object.
+ */
+public Bluetooth get_default() {
+    return Bluetooth.get_default();
+}
 }
 
 /**
@@ -25,37 +25,37 @@ public class AstalBluetooth.Bluetooth : Object {
 
     private DBusObjectManagerClient manager;
 
-    private HashTable<string, Adapter> _adapters =
-        new HashTable<string, Adapter>(str_hash, str_equal);
+    private HashTable <string, Adapter> _adapters =
+        new HashTable <string, Adapter>(str_hash, str_equal);
 
-    private HashTable<string, Device> _devices =
-        new HashTable<string, Device>(str_hash, str_equal);
+    private HashTable <string, Device> _devices =
+        new HashTable <string, Device>(str_hash, str_equal);
 
     /**
      * Emitted when a new device is registered on the `org.bluez` bus.
      */
-    public signal void device_added (Device device) {
+    public signal void device_added(Device device) {
         notify_property("devices");
     }
 
     /**
      * Emitted when a device is unregistered on the `org.bluez` bus.
      */
-    public signal void device_removed (Device device) {
+    public signal void device_removed(Device device) {
         notify_property("devices");
     }
 
     /**
      * Emitted when an adapter is registered on the `org.bluez` bus.
      */
-    public signal void adapter_added (Adapter adapter) {
+    public signal void adapter_added(Adapter adapter) {
         notify_property("adapters");
     }
 
     /**
      * Emitted when an adapter is unregistered on the `org.bluez` bus.
      */
-    public signal void adapter_removed (Adapter adapter) {
+    public signal void adapter_removed(Adapter adapter) {
         notify_property("adapters");
     }
 
@@ -72,19 +72,19 @@ public class AstalBluetooth.Bluetooth : Object {
     /**
      * The first registered adapter which is usually the only adapter.
      */
-    public Adapter? adapter { get { return adapters.nth_data(0); } }
+    public Adapter ?adapter { get { return adapters.nth_data(0); } }
 
     /**
      * List of adapters available on the host device.
      */
-    public List<weak Adapter> adapters {
+    public List <weak Adapter> adapters {
         owned get { return _adapters.get_values(); }
     }
 
     /**
      * List of registered devices on the `org.bluez` bus.
      */
-    public List<weak Device> devices {
+    public List <weak Device> devices {
         owned get { return _devices.get_values(); }
     }
 
@@ -132,21 +132,23 @@ public class AstalBluetooth.Bluetooth : Object {
         adapter.powered = !adapter.powered;
     }
 
-    [CCode (cname="astal_bluetooth_idevice_proxy_get_type")]
+    [CCode(cname = "astal_bluetooth_idevice_proxy_get_type")]
     extern static GLib.Type get_idevice_proxy_type();
 
-    [CCode (cname="astal_bluetooth_iadapter_proxy_get_type")]
+    [CCode(cname = "astal_bluetooth_iadapter_proxy_get_type")]
     extern static GLib.Type get_iadapter_proxy_type();
 
-    private Type manager_proxy_get_type(DBusObjectManagerClient _, string object_path, string? interface_name) {
+    private Type manager_proxy_get_type(DBusObjectManagerClient _, string object_path, string ?interface_name) {
         if (interface_name == null)
             return typeof(DBusObjectProxy);
 
         switch (interface_name) {
             case "org.bluez.Device1":
                 return get_idevice_proxy_type();
+
             case "org.bluez.Adapter1":
                 return get_iadapter_proxy_type();
+
             default:
                 return typeof(DBusProxy);
         }
@@ -170,7 +172,7 @@ public class AstalBluetooth.Bluetooth : Object {
         }
     }
 
-    private void on_interface_removed (DBusObject object, DBusInterface iface) {
+    private void on_interface_removed(DBusObject object, DBusInterface iface) {
         if (iface is IDevice) {
             unowned var device = (IDevice)iface;
             device_removed(_devices.get(device.g_object_path));

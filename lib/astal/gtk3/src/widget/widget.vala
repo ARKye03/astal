@@ -1,10 +1,10 @@
 namespace Astal {
 private class Css {
-    private static HashTable<Gtk.Widget, Gtk.CssProvider> _providers;
-    public static HashTable<Gtk.Widget, Gtk.CssProvider> providers {
+    private static HashTable <Gtk.Widget, Gtk.CssProvider> _providers;
+    public static HashTable <Gtk.Widget, Gtk.CssProvider> providers {
         get {
             if (_providers == null) {
-                _providers = new HashTable<Gtk.Widget, Gtk.CssProvider>(
+                _providers = new HashTable <Gtk.Widget, Gtk.CssProvider>(
                     (w) => (uint)w,
                     (a, b) => a == b);
             }
@@ -30,18 +30,19 @@ public void widget_set_css(Gtk.Widget widget, string css) {
 
     if (providers.contains(widget)) {
         remove_provider(widget);
-    } else {
+    }
+    else {
         widget.destroy.connect(() => {
-            remove_provider(widget);
-        });
+                remove_provider(widget);
+            });
     }
 
     var style = !css.contains("{") || !css.contains("}")
-        ? "* { ".concat(css, "}") : css;
+                ? "* { ".concat(css, "}") : css;
 
     var p = new Gtk.CssProvider();
     widget.get_style_context()
-        .add_provider(p, Gtk.STYLE_PROVIDER_PRIORITY_USER);
+    .add_provider(p, Gtk.STYLE_PROVIDER_PRIORITY_USER);
 
     try {
         p.load_from_data(style, style.length);
@@ -68,7 +69,7 @@ public void widget_set_class_names(Gtk.Widget widget, string[] class_names) {
         widget_toggle_class_name(widget, name, true);
 }
 
-public List<weak string> widget_get_class_names(Gtk.Widget widget) {
+public List <weak string> widget_get_class_names(Gtk.Widget widget) {
     return widget.get_style_context().list_classes();
 }
 
@@ -78,6 +79,7 @@ public void widget_toggle_class_name(
     bool condition = true
 ) {
     var c = widget.get_style_context();
+
     if (condition)
         c.add_class(class_name);
     else
@@ -85,11 +87,11 @@ public void widget_toggle_class_name(
 }
 
 private class Cursor {
-    private static HashTable<Gtk.Widget, string> _cursors;
-    public static HashTable<Gtk.Widget, string> cursors {
+    private static HashTable <Gtk.Widget, string> _cursors;
+    public static HashTable <Gtk.Widget, string> cursors {
         get {
             if (_cursors == null) {
-                _cursors = new HashTable<Gtk.Widget, string>(
+                _cursors = new HashTable <Gtk.Widget, string>(
                     (w) => (uint)w,
                     (a, b) => a == b);
             }
@@ -102,23 +104,23 @@ private void widget_setup_cursor(Gtk.Widget widget) {
     widget.add_events(Gdk.EventMask.ENTER_NOTIFY_MASK);
     widget.add_events(Gdk.EventMask.LEAVE_NOTIFY_MASK);
     widget.enter_notify_event.connect(() => {
-        widget.get_window().set_cursor(
-            new Gdk.Cursor.from_name(
-                Gdk.Display.get_default(),
-                Cursor.cursors.get(widget)));
-        return false;
-    });
+            widget.get_window().set_cursor(
+                new Gdk.Cursor.from_name(
+                    Gdk.Display.get_default(),
+                    Cursor.cursors.get(widget)));
+            return false;
+        });
     widget.leave_notify_event.connect(() => {
-        widget.get_window().set_cursor(
-            new Gdk.Cursor.from_name(
-                Gdk.Display.get_default(),
-                "default"));
-        return false;
-    });
+            widget.get_window().set_cursor(
+                new Gdk.Cursor.from_name(
+                    Gdk.Display.get_default(),
+                    "default"));
+            return false;
+        });
     widget.destroy.connect(() => {
-        if (Cursor.cursors.contains(widget))
-            Cursor.cursors.remove(widget);
-    });
+            if (Cursor.cursors.contains(widget))
+                Cursor.cursors.remove(widget);
+        });
 }
 
 public void widget_set_cursor(Gtk.Widget widget, string cursor) {
@@ -133,11 +135,11 @@ public string widget_get_cursor(Gtk.Widget widget) {
 }
 
 private class ClickThrough {
-    private static HashTable<Gtk.Widget, bool> _click_through;
-    public static HashTable<Gtk.Widget, bool> click_through {
+    private static HashTable <Gtk.Widget, bool> _click_through;
+    public static HashTable <Gtk.Widget, bool> click_through {
         get {
             if (_click_through == null) {
-                _click_through = new HashTable<Gtk.Widget, bool>(
+                _click_through = new HashTable <Gtk.Widget, bool>(
                     (w) => (uint)w,
                     (a, b) => a == b);
             }

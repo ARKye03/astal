@@ -15,7 +15,7 @@ int main(string[] argv) {
         opts.set_ignore_unknown_options(false);
         opts.parse(ref argv);
     } catch (OptionError err) {
-        printerr (err.message);
+        printerr(err.message);
         return 1;
     }
 
@@ -32,12 +32,12 @@ int main(string[] argv) {
             AstalTray.TrayItem item = tray.get_item(id);
 
             stdout.printf("{\"event\":\"item_added\",\"id\":\"%s\",\"item\":%s}\n",
-                id, item.to_json_string());
+                          id, item.to_json_string());
             stdout.flush();
 
             item.changed.connect(() => {
                 stdout.printf("{\"event\":\"item_changed\",\"id\":\"%s\",\"item\":%s}\n",
-                    id, item.to_json_string());
+                              id, item.to_json_string());
                 stdout.flush();
             });
         });

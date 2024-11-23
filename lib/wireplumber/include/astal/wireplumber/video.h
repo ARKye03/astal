@@ -12,7 +12,7 @@ G_BEGIN_DECLS
 
 G_DECLARE_FINAL_TYPE(AstalWpVideo, astal_wp_video, ASTAL_WP, VIDEO, GObject)
 
-AstalWpEndpoint *astal_wp_video_get_source(AstalWpVideo *self, guint id);
+AstalWpEndpoint *astal_wp_video_get_source(AstalWpVideo * self, guint id);
 AstalWpEndpoint *astal_wp_video_get_sink(AstalWpVideo *self, guint id);
 AstalWpEndpoint *astal_wp_video_get_recorder(AstalWpVideo *self, guint id);
 AstalWpEndpoint *astal_wp_video_get_stream(AstalWpVideo *self, guint id);

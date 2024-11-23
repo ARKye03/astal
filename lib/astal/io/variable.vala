@@ -3,14 +3,22 @@
  * in higher level language bindings such as Lua and Gjs.
  */
 public class AstalIO.VariableBase : Object {
-    public signal void changed ();
-    public signal void dropped ();
-    public signal void error (string err);
+    public signal void changed();
+    public signal void dropped();
+    public signal void error(string err);
 
     // lua-lgi crashes when using its emitting mechanism
-    public void emit_changed() { changed(); }
-    public void emit_dropped() { dropped(); }
-    public void emit_error(string err) { this.error(err); }
+    public void emit_changed() {
+        changed();
+    }
+
+    public void emit_dropped() {
+        dropped();
+    }
+
+    public void emit_error(string err) {
+        this.error(err);
+    }
 
     ~VariableBase() {
         dropped();
@@ -21,14 +29,14 @@ public class AstalIO.Variable : VariableBase {
     public Value value { owned get; set; }
 
     private uint poll_id = 0;
-    private Process? watch_proc;
+    private Process ?watch_proc;
 
     private uint poll_interval { get; set; default = 1000; }
     private string[] poll_exec { get; set; }
-    private Closure? poll_transform { get; set; }
-    private Closure? poll_fn { get; set; }
+    private Closure ?poll_transform { get; set; }
+    private Closure ?poll_fn { get; set; }
 
-    private Closure? watch_transform { get; set; }
+    private Closure ?watch_transform { get; set; }
     private string[] watch_exec { get; set; }
 
     public Variable(Value init) {
@@ -38,7 +46,7 @@ public class AstalIO.Variable : VariableBase {
     public Variable poll(
         uint interval,
         string exec,
-        Closure? transform
+        Closure ?transform
     ) throws Error {
         string[] argv;
         Shell.parse_argv(exec, out argv);
@@ -48,7 +56,7 @@ public class AstalIO.Variable : VariableBase {
     public Variable pollv(
         uint interval,
         string[] execv,
-        Closure? transform
+        Closure ?transform
     ) throws Error {
         if (is_polling())
             stop_poll();
@@ -77,7 +85,7 @@ public class AstalIO.Variable : VariableBase {
 
     public Variable watch(
         string exec,
-        Closure? transform
+        Closure ?transform
     ) throws Error {
         string[] argv;
         Shell.parse_argv(exec, out argv);
@@ -86,7 +94,7 @@ public class AstalIO.Variable : VariableBase {
 
     public Variable watchv(
         string[] execv,
-        Closure? transform
+        Closure ?transform
     ) throws Error {
         if (is_watching())
             stop_watch();
@@ -108,7 +116,7 @@ public class AstalIO.Variable : VariableBase {
         });
     }
 
-    private void set_closure(string val, Closure? transform) {
+    private void set_closure(string val, Closure ?transform) {
         if (transform != null) {
             var str = Value(typeof(string));
             str.set_string(val);
@@ -189,8 +197,13 @@ public class AstalIO.Variable : VariableBase {
         watch_proc = null;
     }
 
-    public bool is_polling() { return poll_id > 0; }
-    public bool is_watching() { return watch_proc != null; }
+    public bool is_polling() {
+        return poll_id > 0;
+    }
+
+    public bool is_watching() {
+        return watch_proc != null;
+    }
 
     ~Variable() {
         dropped();

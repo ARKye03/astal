@@ -9,8 +9,13 @@ public class AstalMpris.Player : Object {
     private IPlayer proxy;
     private uint pollid; // periodically notify position
 
-    internal signal void appeared() { available = true; }
-    internal signal void closed() { available = false; }
+    internal signal void appeared() {
+        available = true;
+    }
+
+    internal signal void closed() {
+        available = false;
+    }
 
     /**
      * Full dbus namae of this player.
@@ -183,12 +188,15 @@ public class AstalMpris.Player : Object {
             case Loop.NONE:
                 loop_status = Loop.TRACK;
                 break;
+
             case Loop.TRACK:
                 loop_status = Loop.PLAYLIST;
                 break;
+
             case Loop.PLAYLIST:
                 loop_status = Loop.NONE;
                 break;
+
             default:
                 break;
         }
@@ -204,8 +212,8 @@ public class AstalMpris.Player : Object {
         }
 
         shuffle_status = shuffle_status == Shuffle.ON
-            ? Shuffle.OFF
-            : Shuffle.ON;
+                         ? Shuffle.OFF
+                         : Shuffle.ON;
     }
 
     private double _get_position() {
@@ -213,8 +221,8 @@ public class AstalMpris.Player : Object {
             var reply = proxy.call_sync(
                 "org.freedesktop.DBus.Properties.Get",
                 new Variant("(ss)",
-                    "org.mpris.MediaPlayer2.Player",
-                    "Position"
+                            "org.mpris.MediaPlayer2.Player",
+                            "Position"
                 ),
                 DBusCallFlags.NONE,
                 -1,
@@ -337,8 +345,8 @@ public class AstalMpris.Player : Object {
      * In languages that cannot introspect this
      * use [method@AstalMpris.Player.get_meta].
      */
-    [CCode (notify = false)] // notified manually in sync
-    public HashTable<string, Variant> metadata { owned get; private set; }
+    [CCode(notify = false)]  // notified manually in sync
+    public HashTable <string, Variant> metadata { owned get; private set; }
 
     /**
      * Currently playing track's id.
@@ -400,7 +408,7 @@ public class AstalMpris.Player : Object {
      * Lookup a key from [property@AstalMpris.Player:metadata].
      * This method is useful for languages that fail to introspect hashtables.
      */
-    public Variant? get_meta(string key) {
+    public Variant ? get_meta(string key) {
         return metadata.lookup(key);
     }
 
@@ -413,7 +421,7 @@ public class AstalMpris.Player : Object {
      */
     public Player(string name) {
         bus_name = name.has_prefix("org.mpris.MediaPlayer2.")
-            ? name : @"org.mpris.MediaPlayer2.$name";
+                   ? name : @"org.mpris.MediaPlayer2.$name";
     }
 
     private void sync() {
@@ -476,10 +484,12 @@ public class AstalMpris.Player : Object {
                 var v = metadata.get("mpris:length");
                 if (v.get_type_string() == "x") {
                     length = (double)v.get_int64() / 1000000;
-                } else if (v.get_type_string() == "t") {
+                }
+                else if (v.get_type_string() == "t") {
                     length = (double)v.get_uint64() / 1000000;
                 }
-            } else {
+            }
+            else {
                 length = -1;
             }
 
@@ -524,13 +534,13 @@ public class AstalMpris.Player : Object {
                 null,
                 null,
                 (_, res) => {
-                    try {
-                        file.copy_async.end(res);
-                        cover_art = path;
-                    } catch (Error err) {
-                        critical("Failed to cache cover art with url \"%s\": %s", art_url, err.message);
-                    }
+                try {
+                    file.copy_async.end(res);
+                    cover_art = path;
+                } catch (Error err) {
+                    critical("Failed to cache cover art with url \"%s\": %s", art_url, err.message);
                 }
+            }
             );
         } catch (Error err) {
             critical(err.message);
@@ -545,7 +555,7 @@ public class AstalMpris.Player : Object {
         return str == null ? "" : str;
     }
 
-    private string? join_strv(string key, string sep) {
+    private string ? join_strv(string key, string sep) {
         if (metadata.get(key) == null)
             return null;
 
@@ -607,7 +617,8 @@ public class AstalMpris.Player : Object {
         proxy.notify["g-name-owner"].connect(() => {
             if (proxy.g_name_owner != null) {
                 appeared();
-            } else {
+            }
+            else {
                 closed();
             }
         });
@@ -625,12 +636,14 @@ public enum AstalMpris.PlaybackStatus {
     PAUSED,
     STOPPED;
 
-    internal static PlaybackStatus from_string(string? str) {
+    internal static PlaybackStatus from_string(string ?str) {
         switch (str) {
             case "Playing":
                 return PLAYING;
+
             case "Paused":
                 return PAUSED;
+
             case "Stopped":
             default:
                 return STOPPED;
@@ -647,27 +660,33 @@ public enum AstalMpris.Loop {
     /** The playback loops through a list of tracks. */
     PLAYLIST;
 
-    internal static Loop from_string(string? str) {
+    internal static Loop from_string(string ?str) {
         switch (str) {
             case "None":
                 return NONE;
+
             case "Track":
                 return TRACK;
+
             case "Playlist":
                 return PLAYLIST;
+
             default:
                 return UNSUPPORTED;
         }
     }
 
-    internal string? to_string() {
+    internal string ? to_string() {
         switch (this) {
             case NONE:
                 return "None";
+
             case TRACK:
                 return "Track";
+
             case PLAYLIST:
                 return "Playlist";
+
             default:
                 return "Unsupported";
         }
@@ -685,12 +704,14 @@ public enum AstalMpris.Shuffle {
         return b ? Shuffle.ON : Shuffle.OFF;
     }
 
-    internal string? to_string() {
+    internal string ? to_string() {
         switch (this) {
             case OFF:
                 return "Off";
+
             case ON:
                 return "On";
+
             default:
                 return "Unsupported";
         }

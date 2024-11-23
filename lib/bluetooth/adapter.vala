@@ -10,7 +10,7 @@ public class AstalBluetooth.Adapter : Object {
         this.proxy = proxy;
         this.object_path = proxy.g_object_path;
         proxy.g_properties_changed.connect((props) => {
-            var map = (HashTable<string, Variant>)props;
+            var map = (HashTable <string, Variant>)props;
             foreach (var key in map.get_keys()) {
                 var prop = kebab_case(key);
                 if (get_class().find_property(prop) != null) {
@@ -124,7 +124,6 @@ public class AstalBluetooth.Adapter : Object {
         proxy.remove_device(device.object_path);
     }
 
-
     /**
      * This method starts the device discovery procedure.
      *
@@ -133,7 +132,6 @@ public class AstalBluetooth.Adapter : Object {
     public void start_discovery() throws Error {
         proxy.start_discovery();
     }
-
 
     /**
      * This method will cancel any previous [method@AstalBluetooth.Adapter.start_discovery] procedure.

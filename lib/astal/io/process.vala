@@ -31,13 +31,13 @@ public class AstalIO.Process : Object {
      * When the underlying subprocess writes to its stdout
      * this signal is emitted with that line.
      */
-    public signal void stdout (string out);
+    public signal void stdout(string out);
 
     /**
      * When the underlying subprocess writes to its stderr
      * this signal is emitted with that line.
      */
-    public signal void stderr (string err);
+    public signal void stderr(string err);
 
     /**
      * Force quit the subprocess.
@@ -79,9 +79,9 @@ public class AstalIO.Process : Object {
     public Process.subprocessv(string[] cmd) throws Error {
         Object(argv: cmd);
         process = new Subprocess.newv(cmd,
-            SubprocessFlags.STDIN_PIPE |
-            SubprocessFlags.STDERR_PIPE |
-            SubprocessFlags.STDOUT_PIPE
+                                      SubprocessFlags.STDIN_PIPE |
+                                      SubprocessFlags.STDERR_PIPE |
+                                      SubprocessFlags.STDOUT_PIPE
         );
         out_stream = new DataInputStream(process.get_stdout_pipe());
         err_stream = new DataInputStream(process.get_stderr_pipe());
@@ -96,6 +96,7 @@ public class AstalIO.Process : Object {
      */
     public static Process subprocess(string cmd) throws Error {
         string[] argv;
+
         Shell.parse_argv(cmd, out argv);
         return new Process.subprocessv(argv);
     }
@@ -114,6 +115,7 @@ public class AstalIO.Process : Object {
         );
 
         string err_str, out_str;
+
         process.communicate_utf8(null, null, out out_str, out err_str);
         var success = process.get_successful();
         process.dispose();
@@ -131,6 +133,7 @@ public class AstalIO.Process : Object {
      */
     public static string exec(string cmd) throws Error {
         string[] argv;
+
         Shell.parse_argv(cmd, out argv);
         return Process.execv(argv);
     }
@@ -149,7 +152,9 @@ public class AstalIO.Process : Object {
         );
 
         string err_str, out_str;
+
         yield process.communicate_utf8_async(null, null, out out_str, out err_str);
+
         var success = process.get_successful();
         process.dispose();
         if (success)
@@ -166,6 +171,7 @@ public class AstalIO.Process : Object {
      */
     public static async string exec_async(string cmd) throws Error {
         string[] argv;
+
         Shell.parse_argv(cmd, out argv);
         return yield exec_asyncv(argv);
     }

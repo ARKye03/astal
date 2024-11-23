@@ -9,12 +9,12 @@ public class AstalIO.Time : Object {
     /**
      * Emitted when the timer ticks.
      */
-    public signal void now ();
+    public signal void now();
 
     /**
      * Emitted when the timere is cancelled.
      */
-    public signal void cancelled ();
+    public signal void cancelled();
 
     construct {
         cancellable = new Cancellable();
@@ -27,7 +27,7 @@ public class AstalIO.Time : Object {
         });
     }
 
-    private void connect_closure(Closure? closure) {
+    private void connect_closure(Closure ?closure) {
         if (closure == null)
             return;
 
@@ -79,7 +79,7 @@ public class AstalIO.Time : Object {
      * @param interval Tick every milliseconds.
      * @param fn Optional callback.
      */
-    public static Time interval(uint interval, Closure? fn) {
+    public static Time interval(uint interval, Closure ?fn) {
         return new Time.interval_prio(interval, Priority.DEFAULT, fn);
     }
 
@@ -89,7 +89,7 @@ public class AstalIO.Time : Object {
      * @param timeout Tick after milliseconds.
      * @param fn Optional callback.
      */
-    public static Time timeout(uint timeout, Closure? fn) {
+    public static Time timeout(uint timeout, Closure ?fn) {
         return new Time.timeout_prio(timeout, Priority.DEFAULT, fn);
     }
 
@@ -98,7 +98,7 @@ public class AstalIO.Time : Object {
      *
      * @param fn Optional callback.
      */
-    public static Time idle(Closure? fn) {
+    public static Time idle(Closure ?fn) {
         return new Time.idle_prio(Priority.DEFAULT_IDLE, fn);
     }
 

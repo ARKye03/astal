@@ -4,6 +4,7 @@ namespace AstalIO {
  */
 public string read_file(string path) {
     var str = "";
+
     try {
         FileUtils.get_contents(path, out str, null);
     } catch (Error error) {
@@ -17,7 +18,9 @@ public string read_file(string path) {
  */
 public async string read_file_async(string path) throws Error {
     uint8[] content;
+
     yield File.new_for_path(path).load_contents_async(null, out content, null);
+
     return (string)content;
 }
 
@@ -50,25 +53,25 @@ public async void write_file_async(string path, string content) throws Error {
  * The callback will be called passed two parameters: the path of the file
  * that changed and an [enum@Gio.FileMonitorEvent] indicating the reason.
  */
-public FileMonitor? monitor_file(string path, Closure callback) {
+public FileMonitor ? monitor_file(string path, Closure callback) {
     try {
         var file = File.new_for_path(path);
         var mon = file.monitor(FileMonitorFlags.NONE);
 
         mon.changed.connect((file, _file, event) => {
-            var f = Value(Type.STRING);
-            var e = Value(Type.INT);
-            var ret = Value(Type.POINTER);
+                var f = Value(Type.STRING);
+                var e = Value(Type.INT);
+                var ret = Value(Type.POINTER);
 
-            f.set_string(file.get_path());
-            e.set_int(event);
+                f.set_string(file.get_path());
+                e.set_int(event);
 
-            callback.invoke(ref ret, { f, e });
-        });
+                callback.invoke(ref ret, { f, e });
+            });
 
         if (FileUtils.test(path, FileTest.IS_DIR)) {
             var enumerator = file.enumerate_children("standard::*",
-                FileQueryInfoFlags.NONE, null);
+                                                     FileQueryInfoFlags.NONE, null);
 
             var i = enumerator.next_file(null);
             while (i != null) {
@@ -77,8 +80,8 @@ public FileMonitor? monitor_file(string path, Closure callback) {
                     if (filepath != null) {
                         var m = monitor_file(path, callback);
                         mon.notify["cancelled"].connect(() => {
-                            m.cancel();
-                        });
+                                m.cancel();
+                            });
                     }
                 }
                 i = enumerator.next_file(null);
@@ -87,8 +90,8 @@ public FileMonitor? monitor_file(string path, Closure callback) {
 
         mon.ref();
         mon.notify["cancelled"].connect(() => {
-            mon.unref();
-        });
+                mon.unref();
+            });
         return mon;
     } catch (Error error) {
         critical(error.message);

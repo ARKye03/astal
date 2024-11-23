@@ -21,7 +21,7 @@ int main(string[] argv) {
         opts.set_ignore_unknown_options(false);
         opts.parse(ref argv);
     } catch (OptionError err) {
-        printerr (err.message);
+        printerr(err.message);
         return 1;
     }
 
@@ -57,7 +57,8 @@ int main(string[] argv) {
         var generator = new Json.Generator();
         generator.set_root(b.end_array().get_root());
         stdout.printf(generator.to_data(null));
-    } else {
+    }
+    else {
         foreach (var app in apps.query(search))
             stdout.printf("%s\n", app.entry);
     }

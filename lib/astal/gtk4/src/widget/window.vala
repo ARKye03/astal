@@ -11,10 +11,12 @@ public enum Astal.WindowAnchor {
 
 public enum Astal.Exclusivity {
     NORMAL,
+
     /**
      * Request the compositor to allocate space for this window.
      */
     EXCLUSIVE,
+
     /**
      * Request the compositor to stack layers on top of each other.
      */
@@ -33,10 +35,12 @@ public enum Astal.Keymode {
      * Window should not receive keyboard events.
      */
     NONE = 0, // GtkLayerShell.KeyboardMode.NONE
+
     /**
      * Window should have exclusive focus if it is on the top or overlay layer.
      */
     EXCLUSIVE = 1, // GtkLayerShell.KeyboardMode.EXCLUSIVE
+
     /**
      * Focus and Unfocues the window as needed.
      */
@@ -121,9 +125,11 @@ public class Astal.Window : Gtk.Window {
                 case Exclusivity.NORMAL:
                     set_exclusive_zone(this, 0);
                     break;
+
                 case Exclusivity.EXCLUSIVE:
                     auto_exclusive_zone_enable(this);
                     break;
+
                 case Exclusivity.IGNORE:
                     set_exclusive_zone(this, -1);
                     break;
@@ -175,7 +181,7 @@ public class Astal.Window : Gtk.Window {
             if (check("set gdkmonitor"))
                 return;
 
-            set_monitor (this, value);
+            set_monitor(this, value);
         }
     }
 

@@ -1,6 +1,6 @@
-[DBus (name="io.Astal.Application")]
+[DBus(name = "io.Astal.Application")]
 public class Astal.Application : Gtk.Application, AstalIO.Application {
-    private List<Gtk.CssProvider> css_providers = new List<Gtk.CssProvider>();
+    private List <Gtk.CssProvider> css_providers = new List <Gtk.CssProvider>();
     private SocketService service;
     private DBusConnection conn;
     private string _instance_name = "astal";
@@ -9,30 +9,30 @@ public class Astal.Application : Gtk.Application, AstalIO.Application {
     /**
      * Emitted when a new monitor is added to [class@Gdk.Display].
      */
-    [DBus (visible=false)]
+    [DBus(visible = false)]
     public signal void monitor_added(Gdk.Monitor monitor);
 
     /**
      * Emitted when a monitor is disconnected from [class@Gdk.Display].
      */
-    [DBus (visible=false)]
+    [DBus(visible = false)]
     public signal void monitor_removed(Gdk.Monitor monitor);
 
     /**
      * Emitted when a window that has been added using
      * [method@Gtk.Application.add_window] changes its visibility .
      */
-    [DBus (visible=false)]
+    [DBus(visible = false)]
     public signal void window_toggled(Gtk.Window window);
 
     /**
      * Get all monitors from [class@Gdk.Display].
      */
-    [DBus (visible=false)]
-    public List<weak Gdk.Monitor> monitors {
+    [DBus(visible = false)]
+    public List <weak Gdk.Monitor> monitors {
         owned get {
             var display = Gdk.Display.get_default();
-            var list = new List<weak Gdk.Monitor>();
+            var list = new List <weak Gdk.Monitor>();
             for (var i = 0; i <= display.get_n_monitors(); ++i) {
                 var mon = display.get_monitor(i);
                 if (mon != null) {
@@ -48,7 +48,7 @@ public class Astal.Application : Gtk.Application, AstalIO.Application {
      *
      * This is the identifier used by the AstalIO package and the CLI.
      */
-    [DBus (visible=false)]
+    [DBus(visible = false)]
     public string instance_name {
         owned get { return _instance_name; }
         construct set {
@@ -60,8 +60,8 @@ public class Astal.Application : Gtk.Application, AstalIO.Application {
     /**
      * Windows that has been added to this app using [method@Gtk.Application.add_window].
      */
-    [DBus (visible=false)]
-    public List<Gtk.Window> windows {
+    [DBus(visible = false)]
+    public List <Gtk.Window> windows {
         get { return get_windows(); }
     }
 
@@ -76,7 +76,7 @@ public class Astal.Application : Gtk.Application, AstalIO.Application {
     /**
      * Shortcut for [property@Gtk.Settings:gtk_theme_name]
      */
-    [DBus (visible=false)]
+    [DBus(visible = false)]
     public string gtk_theme {
         owned get { return settings.gtk_theme_name; }
         set { settings.gtk_theme_name = value; }
@@ -85,7 +85,7 @@ public class Astal.Application : Gtk.Application, AstalIO.Application {
     /**
      * Shortcut for [property@Gtk.Settings:gtk_icon_theme_name]
      */
-    [DBus (visible=false)]
+    [DBus(visible = false)]
     public string icon_theme {
         owned get { return settings.gtk_icon_theme_name; }
         set { settings.gtk_icon_theme_name = value; }
@@ -94,7 +94,7 @@ public class Astal.Application : Gtk.Application, AstalIO.Application {
     /**
      * Shortcut for [property@Gtk.Settings:gtk_cursor_theme_name]
      */
-    [DBus (visible=false)]
+    [DBus(visible = false)]
     public string cursor_theme {
         owned get { return settings.gtk_cursor_theme_name; }
         set { settings.gtk_cursor_theme_name = value; }
@@ -103,12 +103,12 @@ public class Astal.Application : Gtk.Application, AstalIO.Application {
     /**
      * Remove all [class@Gtk.StyleContext] providers.
      */
-    [DBus (visible=false)]
+    [DBus(visible = false)]
     public void reset_css() {
-        foreach(var provider in css_providers) {
+        foreach (var provider in css_providers) {
             Gtk.StyleContext.remove_provider_for_screen(screen, provider);
         }
-        css_providers = new List<Gtk.CssProvider>();
+        css_providers = new List <Gtk.CssProvider>();
     }
 
     /**
@@ -122,9 +122,9 @@ public class Astal.Application : Gtk.Application, AstalIO.Application {
      * Get a window by its [property@Gtk.Widget:name] that has been added to this app
      * using [method@Gtk.Application.add_window].
      */
-    [DBus (visible=false)]
+    [DBus(visible = false)]
     public Gtk.Window? get_window(string name) {
-        foreach(var win in windows) {
+        foreach (var win in windows) {
             if (win.name == name)
                 return win;
         }
@@ -141,7 +141,8 @@ public class Astal.Application : Gtk.Application, AstalIO.Application {
         var win = get_window(window);
         if (win != null) {
             win.visible = !win.visible;
-        } else {
+        }
+        else {
             throw new IOError.FAILED("window not found");
         }
     }
@@ -151,7 +152,7 @@ public class Astal.Application : Gtk.Application, AstalIO.Application {
      *
      * @param style Css string or a path to a css file.
      */
-    [DBus (visible=false)]
+    [DBus(visible = false)]
     public void apply_css(string style, bool reset = false) {
         var provider = new Gtk.CssProvider();
 
@@ -176,8 +177,8 @@ public class Astal.Application : Gtk.Application, AstalIO.Application {
     /**
      * Shortcut for [method@Gtk.IconTheme.prepend_search_path].
      */
-    [DBus (visible=false)]
-    public void add_icons(string? path) {
+    [DBus(visible = false)]
+    public void add_icons(string ?path) {
         if (path != null) {
             Gtk.IconTheme.get_default().prepend_search_path(path);
         }
@@ -189,7 +190,7 @@ public class Astal.Application : Gtk.Application, AstalIO.Application {
      * @param msg Body of the message
      * @param conn The connection which expects the response.
      */
-    [DBus (visible=false)]
+    [DBus(visible = false)]
     public virtual void request(string msg, SocketConnection conn) {
         AstalIO.write_sock.begin(conn, @"missing response implementation on $application_id");
     }
@@ -198,7 +199,7 @@ public class Astal.Application : Gtk.Application, AstalIO.Application {
      * Attempt to acquire the astal socket for this app identified by its [property@AstalIO.Application:instance_name].
      * If the socket is in use by another app with the same name an [error@AstalIO.AppError.NAME_OCCUPIED] is thrown.
      */
-    [DBus (visible=false)]
+    [DBus(visible = false)]
     public void acquire_socket() throws Error {
         string path;
         service = AstalIO.acquire_socket(this, out path);
@@ -209,13 +210,13 @@ public class Astal.Application : Gtk.Application, AstalIO.Application {
             application_id,
             BusNameOwnerFlags.NONE,
             (conn) => {
-                try {
-                    this.conn = conn;
-                    conn.register_object("/io/Astal/Application", this);
-                } catch (Error err) {
-                    critical(err.message);
-                }
-            },
+            try {
+                this.conn = conn;
+                conn.register_object("/io/Astal/Application", this);
+            } catch (Error err) {
+                critical(err.message);
+            }
+        },
             () => {},
             () => {}
         );
@@ -257,9 +258,9 @@ public class Astal.Application : Gtk.Application, AstalIO.Application {
             });
         });
 
-        shutdown.connect(() => { try { quit(); } catch(Error err) {} });
-        Unix.signal_add(1, () => { try { quit(); } catch(Error err) {} }, Priority.HIGH);
-        Unix.signal_add(2, () => { try { quit(); } catch(Error err) {} }, Priority.HIGH);
-        Unix.signal_add(15, () => { try { quit(); } catch(Error err) {} }, Priority.HIGH);
+        shutdown.connect(() => { try { quit(); } catch (Error err) {} });
+        Unix.signal_add(1, () => { try { quit(); } catch (Error err) {} }, Priority.HIGH);
+        Unix.signal_add(2, () => { try { quit(); } catch (Error err) {} }, Priority.HIGH);
+        Unix.signal_add(15, () => { try { quit(); } catch (Error err) {} }, Priority.HIGH);
     }
 }

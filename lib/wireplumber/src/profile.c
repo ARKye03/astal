@@ -21,9 +21,13 @@ static GParamSpec *astal_wp_profile_properties[ASTAL_WP_PROFILE_N_PROPERTIES] = 
     NULL,
 };
 
-gint astal_wp_profile_get_index(AstalWpProfile *self) { return self->index; }
+gint astal_wp_profile_get_index(AstalWpProfile *self) {
+    return self->index;
+}
 
-const gchar *astal_wp_profile_get_description(AstalWpProfile *self) { return self->description; }
+const gchar *astal_wp_profile_get_description(AstalWpProfile *self) {
+    return self->description;
+}
 
 static void astal_wp_profile_get_property(GObject *object, guint property_id, GValue *value,
                                           GParamSpec *pspec) {
@@ -33,9 +37,11 @@ static void astal_wp_profile_get_property(GObject *object, guint property_id, GV
         case ASTAL_WP_PROFILE_PROP_INDEX:
             g_value_set_int(value, self->index);
             break;
+
         case ASTAL_WP_PROFILE_PROP_DESCRIPTION:
             g_value_set_string(value, self->description);
             break;
+
         default:
             G_OBJECT_WARN_INVALID_PROPERTY_ID(object, property_id, pspec);
             break;
@@ -50,25 +56,31 @@ static void astal_wp_profile_set_property(GObject *object, guint property_id, co
         case ASTAL_WP_PROFILE_PROP_INDEX:
             self->index = g_value_get_int(value);
             break;
+
         case ASTAL_WP_PROFILE_PROP_DESCRIPTION:
             g_free(self->description);
             self->description = g_strdup(g_value_get_string(value));
             break;
+
         default:
             G_OBJECT_WARN_INVALID_PROPERTY_ID(object, property_id, pspec);
             break;
     }
 }
 
-static void astal_wp_profile_init(AstalWpProfile *self) { self->description = NULL; }
+static void astal_wp_profile_init(AstalWpProfile *self) {
+    self->description = NULL;
+}
 
 static void astal_wp_profile_finalize(GObject *object) {
     AstalWpProfile *self = ASTAL_WP_PROFILE(object);
+
     g_free(self->description);
 }
 
 static void astal_wp_profile_class_init(AstalWpProfileClass *class) {
     GObjectClass *object_class = G_OBJECT_CLASS(class);
+
     object_class->finalize = astal_wp_profile_finalize;
     object_class->get_property = astal_wp_profile_get_property;
     object_class->set_property = astal_wp_profile_set_property;

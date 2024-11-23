@@ -16,14 +16,14 @@ struct _AstalCavaCava {
     gdouble noise_reduction;
     gint framerate;
     AstalCavaInput input;
-    gchar* audio_source;
+    gchar *audio_source;
     gboolean active;
     gint channels;
     gint low_cutoff;
     gint high_cutoff;
     gint samplerate;
 
-    GArray* values;
+    GArray *values;
 };
 
 typedef struct {
@@ -34,9 +34,8 @@ typedef struct {
     ptr input_src;
 
     gboolean constructed;
-    GThread* input_thread;
+    GThread *input_thread;
     guint timer_id;
-
 } AstalCavaCavaPrivate;
 
 G_DEFINE_ENUM_TYPE(AstalCavaInput, astal_cava_input,
@@ -68,12 +67,12 @@ typedef enum {
     ASTAL_CAVA_CAVA_N_PROPERTIES
 } AstalCavaProperties;
 
-static GParamSpec* astal_cava_cava_properties[ASTAL_CAVA_CAVA_N_PROPERTIES] = {
+static GParamSpec *astal_cava_cava_properties[ASTAL_CAVA_CAVA_N_PROPERTIES] = {
     NULL,
 };
 
-static gboolean exec_cava(AstalCavaCava* self) {
-    AstalCavaCavaPrivate* priv = astal_cava_cava_get_instance_private(self);
+static gboolean exec_cava(AstalCavaCava *self) {
+    AstalCavaCavaPrivate *priv = astal_cava_cava_get_instance_private(self);
 
     pthread_mutex_lock(&priv->audio_data.lock);
     cava_execute(priv->audio_data.cava_in, priv->audio_data.samples_counter,
@@ -89,8 +88,8 @@ static gboolean exec_cava(AstalCavaCava* self) {
     return G_SOURCE_CONTINUE;
 }
 
-static void astal_cava_cava_cleanup(AstalCavaCava* self) {
-    AstalCavaCavaPrivate* priv = astal_cava_cava_get_instance_private(self);
+static void astal_cava_cava_cleanup(AstalCavaCava *self) {
+    AstalCavaCavaPrivate *priv = astal_cava_cava_get_instance_private(self);
 
     g_source_remove(priv->timer_id);
     pthread_mutex_lock(&priv->audio_data.lock);
@@ -108,8 +107,8 @@ static void astal_cava_cava_cleanup(AstalCavaCava* self) {
     g_free(priv->cfg.data_format);
 }
 
-static void astal_cava_cava_start(AstalCavaCava* self) {
-    AstalCavaCavaPrivate* priv = astal_cava_cava_get_instance_private(self);
+static void astal_cava_cava_start(AstalCavaCava *self) {
+    AstalCavaCavaPrivate *priv = astal_cava_cava_get_instance_private(self);
 
     if (self->framerate < 1) {
         self->framerate = 1;
@@ -204,34 +203,44 @@ static void astal_cava_cava_start(AstalCavaCava* self) {
             case INPUT_ALSA:
                 priv->cfg.audio_source = g_strdup("hw:Loopback,1");
                 break;
+
             case INPUT_FIFO:
                 priv->cfg.audio_source = g_strdup("/tmp/mpd.fifo");
                 break;
+
             case INPUT_PULSE:
                 priv->cfg.audio_source = g_strdup("auto");
                 break;
+
             case INPUT_PIPEWIRE:
                 priv->cfg.audio_source = g_strdup("auto");
                 break;
+
             case INPUT_SNDIO:
                 priv->cfg.audio_source = g_strdup("default");
                 break;
+
             case INPUT_OSS:
                 priv->cfg.audio_source = g_strdup("/dev/dsp");
                 break;
+
             case INPUT_JACK:
                 priv->cfg.audio_source = g_strdup("default");
                 break;
+
             case INPUT_SHMEM:
                 priv->cfg.audio_source = g_strdup("/squeezelite-00:00:00:00:00:00");
                 break;
+
             case INPUT_PORTAUDIO:
                 priv->cfg.audio_source = g_strdup("auto");
                 break;
+
             default:
                 g_critical("unsupported audio source");
         }
-    } else {
+    }
+    else {
         priv->cfg.audio_source = g_strdup(self->audio_source);
     }
 
@@ -258,21 +267,26 @@ static void astal_cava_cava_start(AstalCavaCava* self) {
     priv->timer_id = g_timeout_add(1000 / priv->cfg.framerate, G_SOURCE_FUNC(exec_cava), self);
 }
 
-static void astal_cava_cava_restart(AstalCavaCava* self) {
+static void astal_cava_cava_restart(AstalCavaCava *self) {
     if (!self->active) return;
+
     astal_cava_cava_cleanup(self);
     astal_cava_cava_start(self);
 }
 
-gboolean astal_cava_cava_get_active(AstalCavaCava* self) { return self->active; }
+gboolean astal_cava_cava_get_active(AstalCavaCava *self) {
+    return self->active;
+}
 
-void astal_cava_cava_set_active(AstalCavaCava* self, gboolean active) {
+void astal_cava_cava_set_active(AstalCavaCava *self, gboolean active) {
     if (self->active == active) return;
-    AstalCavaCavaPrivate* priv = astal_cava_cava_get_instance_private(self);
+
+    AstalCavaCavaPrivate *priv = astal_cava_cava_get_instance_private(self);
 
     self->active = active;
 
     if (!priv->constructed) return;
+
     if (!active)
         astal_cava_cava_cleanup(self);
     else
@@ -286,12 +300,17 @@ void astal_cava_cava_set_active(AstalCavaCava* self, gboolean active) {
  * Returns: (transfer none) (element-type gdouble): a list of values
  *
  */
-GArray* astal_cava_cava_get_values(AstalCavaCava* self) { return self->values; }
+GArray * astal_cava_cava_get_values(AstalCavaCava *self) {
+    return self->values;
+}
 
-gint astal_cava_cava_get_bars(AstalCavaCava* self) { return self->bars; }
+gint astal_cava_cava_get_bars(AstalCavaCava *self) {
+    return self->bars;
+}
 
-void astal_cava_cava_set_bars(AstalCavaCava* self, gint bars) {
-    AstalCavaCavaPrivate* priv = astal_cava_cava_get_instance_private(self);
+void astal_cava_cava_set_bars(AstalCavaCava *self, gint bars) {
+    AstalCavaCavaPrivate *priv = astal_cava_cava_get_instance_private(self);
+
     self->bars = bars;
     if (priv->constructed) {
         g_array_set_size(self->values, self->bars);
@@ -299,190 +318,246 @@ void astal_cava_cava_set_bars(AstalCavaCava* self, gint bars) {
     }
 }
 
-gboolean astal_cava_cava_get_autosens(AstalCavaCava* self) { return self->autosens; }
+gboolean astal_cava_cava_get_autosens(AstalCavaCava *self) {
+    return self->autosens;
+}
 
-void astal_cava_cava_set_autosens(AstalCavaCava* self, gboolean autosens) {
-    AstalCavaCavaPrivate* priv = astal_cava_cava_get_instance_private(self);
+void astal_cava_cava_set_autosens(AstalCavaCava *self, gboolean autosens) {
+    AstalCavaCavaPrivate *priv = astal_cava_cava_get_instance_private(self);
+
     self->autosens = autosens;
     if (priv->constructed) astal_cava_cava_restart(self);
 }
 
-gboolean astal_cava_cava_get_stereo(AstalCavaCava* self) { return self->stereo; }
+gboolean astal_cava_cava_get_stereo(AstalCavaCava *self) {
+    return self->stereo;
+}
 
-void astal_cava_cava_set_stereo(AstalCavaCava* self, gboolean stereo) {
-    AstalCavaCavaPrivate* priv = astal_cava_cava_get_instance_private(self);
+void astal_cava_cava_set_stereo(AstalCavaCava *self, gboolean stereo) {
+    AstalCavaCavaPrivate *priv = astal_cava_cava_get_instance_private(self);
+
     self->stereo = stereo;
     if (priv->constructed) astal_cava_cava_restart(self);
 }
 
-gdouble astal_cava_cava_get_noise_reduction(AstalCavaCava* self) { return self->noise_reduction; }
+gdouble astal_cava_cava_get_noise_reduction(AstalCavaCava *self) {
+    return self->noise_reduction;
+}
 
-void astal_cava_cava_set_noise_reduction(AstalCavaCava* self, gdouble noise) {
-    AstalCavaCavaPrivate* priv = astal_cava_cava_get_instance_private(self);
+void astal_cava_cava_set_noise_reduction(AstalCavaCava *self, gdouble noise) {
+    AstalCavaCavaPrivate *priv = astal_cava_cava_get_instance_private(self);
+
     self->noise_reduction = noise;
     if (priv->constructed) astal_cava_cava_restart(self);
 }
 
-gint astal_cava_cava_get_framerate(AstalCavaCava* self) { return self->framerate; }
+gint astal_cava_cava_get_framerate(AstalCavaCava *self) {
+    return self->framerate;
+}
 
-void astal_cava_cava_set_framerate(AstalCavaCava* self, gint framerate) {
-    AstalCavaCavaPrivate* priv = astal_cava_cava_get_instance_private(self);
+void astal_cava_cava_set_framerate(AstalCavaCava *self, gint framerate) {
+    AstalCavaCavaPrivate *priv = astal_cava_cava_get_instance_private(self);
+
     self->framerate = framerate;
     if (priv->constructed) astal_cava_cava_restart(self);
 }
 
-AstalCavaInput astal_cava_cava_get_input(AstalCavaCava* self) { return self->input; }
+AstalCavaInput astal_cava_cava_get_input(AstalCavaCava *self) {
+    return self->input;
+}
 
-void astal_cava_cava_set_input(AstalCavaCava* self, AstalCavaInput input) {
-    AstalCavaCavaPrivate* priv = astal_cava_cava_get_instance_private(self);
+void astal_cava_cava_set_input(AstalCavaCava *self, AstalCavaInput input) {
+    AstalCavaCavaPrivate *priv = astal_cava_cava_get_instance_private(self);
+
     self->input = input;
     if (priv->constructed) astal_cava_cava_restart(self);
 }
 
-gchar* astal_cava_cava_get_source(AstalCavaCava* self) { return self->audio_source; }
+gchar * astal_cava_cava_get_source(AstalCavaCava *self) {
+    return self->audio_source;
+}
 
-void astal_cava_cava_set_source(AstalCavaCava* self, const gchar* source) {
-    AstalCavaCavaPrivate* priv = astal_cava_cava_get_instance_private(self);
+void astal_cava_cava_set_source(AstalCavaCava *self, const gchar *source) {
+    AstalCavaCavaPrivate *priv = astal_cava_cava_get_instance_private(self);
+
     g_free(self->audio_source);
     self->audio_source = g_strdup(source);
     if (priv->constructed) astal_cava_cava_restart(self);
 }
 
-gint astal_cava_cava_get_channels(AstalCavaCava* self) { return self->channels; }
+gint astal_cava_cava_get_channels(AstalCavaCava *self) {
+    return self->channels;
+}
 
-void astal_cava_cava_set_channels(AstalCavaCava* self, gint channels) {
-    AstalCavaCavaPrivate* priv = astal_cava_cava_get_instance_private(self);
+void astal_cava_cava_set_channels(AstalCavaCava *self, gint channels) {
+    AstalCavaCavaPrivate *priv = astal_cava_cava_get_instance_private(self);
+
     self->channels = channels;
     if (priv->constructed) astal_cava_cava_restart(self);
 }
 
-gint astal_cava_cava_get_low_cutoff(AstalCavaCava* self) { return self->low_cutoff; }
+gint astal_cava_cava_get_low_cutoff(AstalCavaCava *self) {
+    return self->low_cutoff;
+}
 
-void astal_cava_cava_set_low_cutoff(AstalCavaCava* self, gint low_cutoff) {
-    AstalCavaCavaPrivate* priv = astal_cava_cava_get_instance_private(self);
+void astal_cava_cava_set_low_cutoff(AstalCavaCava *self, gint low_cutoff) {
+    AstalCavaCavaPrivate *priv = astal_cava_cava_get_instance_private(self);
+
     self->low_cutoff = low_cutoff;
     if (priv->constructed) astal_cava_cava_restart(self);
 }
 
-gint astal_cava_cava_get_high_cutoff(AstalCavaCava* self) { return self->high_cutoff; }
+gint astal_cava_cava_get_high_cutoff(AstalCavaCava *self) {
+    return self->high_cutoff;
+}
 
-void astal_cava_cava_set_high_cutoff(AstalCavaCava* self, gint high_cutoff) {
-    AstalCavaCavaPrivate* priv = astal_cava_cava_get_instance_private(self);
+void astal_cava_cava_set_high_cutoff(AstalCavaCava *self, gint high_cutoff) {
+    AstalCavaCavaPrivate *priv = astal_cava_cava_get_instance_private(self);
+
     self->high_cutoff = high_cutoff;
     if (priv->constructed) astal_cava_cava_restart(self);
 }
 
-gint astal_cava_cava_get_samplerate(AstalCavaCava* self) { return self->samplerate; }
+gint astal_cava_cava_get_samplerate(AstalCavaCava *self) {
+    return self->samplerate;
+}
 
-void astal_cava_cava_set_samplerate(AstalCavaCava* self, gint samplerate) {
-    AstalCavaCavaPrivate* priv = astal_cava_cava_get_instance_private(self);
+void astal_cava_cava_set_samplerate(AstalCavaCava *self, gint samplerate) {
+    AstalCavaCavaPrivate *priv = astal_cava_cava_get_instance_private(self);
+
     self->samplerate = samplerate;
     if (priv->constructed) astal_cava_cava_restart(self);
 }
 
-static void astal_cava_cava_set_property(GObject* object, guint property_id, const GValue* value,
-                                         GParamSpec* pspec) {
-    AstalCavaCava* self = ASTAL_CAVA_CAVA(object);
+static void astal_cava_cava_set_property(GObject *object, guint property_id, const GValue *value,
+                                         GParamSpec *pspec) {
+    AstalCavaCava *self = ASTAL_CAVA_CAVA(object);
 
     switch (property_id) {
         case ASTAL_CAVA_CAVA_PROP_BARS:
             astal_cava_cava_set_bars(self, g_value_get_int(value));
             break;
+
         case ASTAL_CAVA_CAVA_PROP_ACTIVE:
             astal_cava_cava_set_active(self, g_value_get_boolean(value));
             break;
+
         case ASTAL_CAVA_CAVA_PROP_AUTOSENS:
             astal_cava_cava_set_autosens(self, g_value_get_boolean(value));
             break;
+
         case ASTAL_CAVA_CAVA_PROP_NOISE:
             astal_cava_cava_set_noise_reduction(self, g_value_get_double(value));
             break;
+
         case ASTAL_CAVA_CAVA_PROP_STEREO:
             astal_cava_cava_set_stereo(self, g_value_get_boolean(value));
             break;
+
         case ASTAL_CAVA_CAVA_PROP_FRAMERATE:
             astal_cava_cava_set_framerate(self, g_value_get_int(value));
             break;
+
         case ASTAL_CAVA_CAVA_PROP_INPUT:
             astal_cava_cava_set_input(self, g_value_get_enum(value));
             break;
+
         case ASTAL_CAVA_CAVA_PROP_SOURCE:
             g_free(self->audio_source);
             astal_cava_cava_set_source(self, g_value_get_string(value));
             break;
+
         case ASTAL_CAVA_CAVA_PROP_CHANNELS:
             astal_cava_cava_set_channels(self, g_value_get_int(value));
             break;
+
         case ASTAL_CAVA_CAVA_PROP_LOW_CUTOFF:
             astal_cava_cava_set_low_cutoff(self, g_value_get_int(value));
             break;
+
         case ASTAL_CAVA_CAVA_PROP_HIGH_CUTOFF:
             astal_cava_cava_set_high_cutoff(self, g_value_get_int(value));
             break;
+
         case ASTAL_CAVA_CAVA_PROP_SAMPLERATE:
             astal_cava_cava_set_samplerate(self, g_value_get_int(value));
             break;
+
         default:
             G_OBJECT_WARN_INVALID_PROPERTY_ID(object, property_id, pspec);
             break;
     }
 }
 
-static void astal_cava_cava_get_property(GObject* object, guint property_id, GValue* value,
-                                         GParamSpec* pspec) {
-    AstalCavaCava* self = ASTAL_CAVA_CAVA(object);
+static void astal_cava_cava_get_property(GObject *object, guint property_id, GValue *value,
+                                         GParamSpec *pspec) {
+    AstalCavaCava *self = ASTAL_CAVA_CAVA(object);
 
     switch (property_id) {
         case ASTAL_CAVA_CAVA_PROP_ACTIVE:
             g_value_set_boolean(value, self->active);
             break;
+
         case ASTAL_CAVA_CAVA_PROP_BARS:
             g_value_set_int(value, self->bars);
             break;
+
         case ASTAL_CAVA_CAVA_PROP_VALUES:
             g_value_set_pointer(value, self->values);
             break;
+
         case ASTAL_CAVA_CAVA_PROP_AUTOSENS:
             g_value_set_boolean(value, self->autosens);
             break;
+
         case ASTAL_CAVA_CAVA_PROP_NOISE:
             g_value_set_double(value, self->noise_reduction);
             break;
+
         case ASTAL_CAVA_CAVA_PROP_STEREO:
             g_value_set_boolean(value, self->stereo);
             break;
+
         case ASTAL_CAVA_CAVA_PROP_FRAMERATE:
             g_value_set_int(value, self->framerate);
             break;
+
         case ASTAL_CAVA_CAVA_PROP_INPUT:
             g_value_set_enum(value, self->input);
             break;
+
         case ASTAL_CAVA_CAVA_PROP_SOURCE:
             g_value_set_string(value, self->audio_source);
             break;
+
         case ASTAL_CAVA_CAVA_PROP_CHANNELS:
             g_value_set_int(value, self->channels);
             break;
+
         case ASTAL_CAVA_CAVA_PROP_LOW_CUTOFF:
             g_value_set_int(value, self->low_cutoff);
             break;
+
         case ASTAL_CAVA_CAVA_PROP_HIGH_CUTOFF:
             g_value_set_int(value, self->high_cutoff);
             break;
+
         case ASTAL_CAVA_CAVA_PROP_SAMPLERATE:
             g_value_set_int(value, self->samplerate);
             break;
+
         default:
             G_OBJECT_WARN_INVALID_PROPERTY_ID(object, property_id, pspec);
             break;
     }
 }
 
-static void astal_cava_cava_constructed(GObject* object) {
-    AstalCavaCava* self = ASTAL_CAVA_CAVA(object);
-    AstalCavaCavaPrivate* priv = astal_cava_cava_get_instance_private(self);
+static void astal_cava_cava_constructed(GObject *object) {
+    AstalCavaCava *self = ASTAL_CAVA_CAVA(object);
+    AstalCavaCavaPrivate *priv = astal_cava_cava_get_instance_private(self);
 
-    gdouble* data = calloc(self->bars, sizeof(gdouble));
+    gdouble *data = calloc(self->bars, sizeof(gdouble));
+
     memset(data, 0, self->bars * sizeof(gdouble));
     self->values = g_array_new_take(data, self->bars, TRUE, sizeof(gdouble));
 
@@ -491,8 +566,9 @@ static void astal_cava_cava_constructed(GObject* object) {
     if (self->active) astal_cava_cava_start(self);
 }
 
-static void astal_cava_cava_init(AstalCavaCava* self) {
-    AstalCavaCavaPrivate* priv = astal_cava_cava_get_instance_private(self);
+static void astal_cava_cava_init(AstalCavaCava *self) {
+    AstalCavaCavaPrivate *priv = astal_cava_cava_get_instance_private(self);
+
     priv->constructed = false;
     self->low_cutoff = 50;
     self->high_cutoff = 10000;
@@ -506,7 +582,9 @@ static void astal_cava_cava_init(AstalCavaCava* self) {
  *
  * Returns: (nullable) (transfer none):
  */
-AstalCavaCava* astal_cava_get_default() { return astal_cava_cava_get_default(); }
+AstalCavaCava * astal_cava_get_default() {
+    return astal_cava_cava_get_default();
+}
 
 /**
  * astal_cava_cava_get_default
@@ -515,31 +593,32 @@ AstalCavaCava* astal_cava_get_default() { return astal_cava_cava_get_default(); 
  *
  * Returns: (nullable) (transfer none):
  */
-AstalCavaCava* astal_cava_cava_get_default() {
-    static AstalCavaCava* self = NULL;
+AstalCavaCava * astal_cava_cava_get_default() {
+    static AstalCavaCava *self = NULL;
 
     if (self == NULL) self = g_object_new(ASTAL_CAVA_TYPE_CAVA, NULL);
 
     return self;
 }
 
-static void astal_cava_cava_dispose(GObject* object) {
-    AstalCavaCava* self = ASTAL_CAVA_CAVA(object);
+static void astal_cava_cava_dispose(GObject *object) {
+    AstalCavaCava *self = ASTAL_CAVA_CAVA(object);
 
     if (self->active) astal_cava_cava_cleanup(self);
     G_OBJECT_CLASS(astal_cava_cava_parent_class)->dispose(object);
 }
 
-static void astal_cava_cava_finalize(GObject* object) {
-    AstalCavaCava* self = ASTAL_CAVA_CAVA(object);
+static void astal_cava_cava_finalize(GObject *object) {
+    AstalCavaCava *self = ASTAL_CAVA_CAVA(object);
 
     g_array_free(self->values, TRUE);
 
     G_OBJECT_CLASS(astal_cava_cava_parent_class)->finalize(object);
 }
 
-static void astal_cava_cava_class_init(AstalCavaCavaClass* class) {
-    GObjectClass* object_class = G_OBJECT_CLASS(class);
+static void astal_cava_cava_class_init(AstalCavaCavaClass *class) {
+    GObjectClass *object_class = G_OBJECT_CLASS(class);
+
     object_class->get_property = astal_cava_cava_get_property;
     object_class->set_property = astal_cava_cava_set_property;
     object_class->constructed = astal_cava_cava_constructed;
@@ -559,6 +638,7 @@ static void astal_cava_cava_class_init(AstalCavaCavaClass* class) {
      */
     astal_cava_cava_properties[ASTAL_CAVA_CAVA_PROP_VALUES] =
         g_param_spec_pointer("values", "values", "a list of values", G_PARAM_READABLE);
+
     /**
      * AstalCavaCava:active:
      *
@@ -567,6 +647,7 @@ static void astal_cava_cava_class_init(AstalCavaCavaClass* class) {
      */
     astal_cava_cava_properties[ASTAL_CAVA_CAVA_PROP_ACTIVE] = g_param_spec_boolean(
         "active", "active", "active", TRUE, G_PARAM_READWRITE | G_PARAM_CONSTRUCT);
+
     /**
      * AstalCavaCava:bars:
      *
@@ -575,6 +656,7 @@ static void astal_cava_cava_class_init(AstalCavaCavaClass* class) {
     astal_cava_cava_properties[ASTAL_CAVA_CAVA_PROP_BARS] =
         g_param_spec_int("bars", "bars", "number of bars per channel", 1, G_MAXINT, 20,
                          G_PARAM_READWRITE | G_PARAM_CONSTRUCT);
+
     /**
      * AstalCavaCava:autosens:
      *
@@ -583,6 +665,7 @@ static void astal_cava_cava_class_init(AstalCavaCavaClass* class) {
     astal_cava_cava_properties[ASTAL_CAVA_CAVA_PROP_AUTOSENS] =
         g_param_spec_boolean("autosens", "autosens", "dynamically adjust sensitivity", TRUE,
                              G_PARAM_READWRITE | G_PARAM_CONSTRUCT);
+
     /**
      * AstalCavaCava:cava:
      *
@@ -590,6 +673,7 @@ static void astal_cava_cava_class_init(AstalCavaCavaClass* class) {
      */
     astal_cava_cava_properties[ASTAL_CAVA_CAVA_PROP_STEREO] = g_param_spec_boolean(
         "stereo", "stereo", "stereo", FALSE, G_PARAM_READWRITE | G_PARAM_CONSTRUCT);
+
     /**
      * AstalCavaCava:noise-reduction:
      *
@@ -599,6 +683,7 @@ static void astal_cava_cava_class_init(AstalCavaCavaClass* class) {
     astal_cava_cava_properties[ASTAL_CAVA_CAVA_PROP_NOISE] =
         g_param_spec_double("noise_reduction", "noise_reduction", "noise reduction", 0, 1, 0.77,
                             G_PARAM_READWRITE | G_PARAM_CONSTRUCT);
+
     /**
      * AstalCavaCava:framerate:
      *
@@ -607,6 +692,7 @@ static void astal_cava_cava_class_init(AstalCavaCavaClass* class) {
     astal_cava_cava_properties[ASTAL_CAVA_CAVA_PROP_FRAMERATE] =
         g_param_spec_int("framerate", "framerate", "framerate", 1, G_MAXINT, 60,
                          G_PARAM_READWRITE | G_PARAM_CONSTRUCT);
+
     /**
      * AstalCavaCava:channels:
      *
@@ -614,6 +700,7 @@ static void astal_cava_cava_class_init(AstalCavaCavaClass* class) {
      */
     astal_cava_cava_properties[ASTAL_CAVA_CAVA_PROP_CHANNELS] = g_param_spec_int(
         "channels", "channels", "channels", 1, 2, 2, G_PARAM_READWRITE | G_PARAM_CONSTRUCT);
+
     /**
      * AstalCavaCava:low-cutoff:
      *
@@ -622,6 +709,7 @@ static void astal_cava_cava_class_init(AstalCavaCavaClass* class) {
     astal_cava_cava_properties[ASTAL_CAVA_CAVA_PROP_LOW_CUTOFF] =
         g_param_spec_int("low-cutoff", "low-cutoff", "lower frequency cutoff", 1, G_MAXINT, 50,
                          G_PARAM_READWRITE | G_PARAM_CONSTRUCT);
+
     /**
      * AstalCavaCava:high-cutoff:
      *
@@ -630,6 +718,7 @@ static void astal_cava_cava_class_init(AstalCavaCavaClass* class) {
     astal_cava_cava_properties[ASTAL_CAVA_CAVA_PROP_HIGH_CUTOFF] =
         g_param_spec_int("high-cutoff", "high-cutoff", "higher frequency cutoff", 1, G_MAXINT,
                          10000, G_PARAM_READWRITE | G_PARAM_CONSTRUCT);
+
     /**
      * AstalCavaCava:samplerate:
      *
@@ -638,6 +727,7 @@ static void astal_cava_cava_class_init(AstalCavaCavaClass* class) {
     astal_cava_cava_properties[ASTAL_CAVA_CAVA_PROP_SAMPLERATE] =
         g_param_spec_int("samplerate", "samplerate", "samplerate", 1, G_MAXINT, 44100,
                          G_PARAM_READWRITE | G_PARAM_CONSTRUCT);
+
     /**
      * AstalCavaCava:input: (type AstalCavaInput)
      *
@@ -646,6 +736,7 @@ static void astal_cava_cava_class_init(AstalCavaCavaClass* class) {
     astal_cava_cava_properties[ASTAL_CAVA_CAVA_PROP_INPUT] =
         g_param_spec_enum("input", "input", "input", ASTAL_CAVA_TYPE_INPUT,
                           ASTAL_CAVA_INPUT_PIPEWIRE, G_PARAM_READWRITE | G_PARAM_CONSTRUCT);
+
     /**
      * AstalCavaCava:source:
      *

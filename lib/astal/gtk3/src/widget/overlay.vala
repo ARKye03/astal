@@ -6,7 +6,7 @@ public class Astal.Overlay : Gtk.Overlay {
      *
      * WARNING: setting this value will remove every overlay but the first.
      */
-    public Gtk.Widget? overlay {
+    public Gtk.Widget ?overlay {
         get { return overlays.nth_data(0); }
         set {
             foreach (var ch in get_children()) {
@@ -22,7 +22,7 @@ public class Astal.Overlay : Gtk.Overlay {
     /**
      * Sets the overlays of this Overlay. [method@Gtk.Overlay.add_overlay].
      */
-    public List<weak Gtk.Widget> overlays {
+    public List <weak Gtk.Widget> overlays {
         owned get { return get_children(); }
         set {
             foreach (var ch in get_children()) {

@@ -1,4 +1,3 @@
-
 #include "wayland-source.h"
 
 #include <errno.h>
@@ -36,7 +35,8 @@ static gboolean wl_source_check(GSource *source) {
 
     if (revents & G_IO_IN) {
         if (wl_display_read_events(self->display) < 0) self->error = errno;
-    } else
+    }
+    else
         wl_display_cancel_read(self->display);
 
     return revents > 0;
@@ -51,11 +51,13 @@ static gboolean wl_source_dispatch(GSource *source, GSourceFunc callback, gpoint
         errno = self->error;
         self->error = 0;
         if (callback != NULL) return callback(user_data);
+
         return G_SOURCE_REMOVE;
     }
 
     if (wl_display_dispatch_pending(self->display) < 0) {
         if (callback != NULL) return callback(user_data);
+
         return G_SOURCE_REMOVE;
     }
 
@@ -64,6 +66,7 @@ static gboolean wl_source_dispatch(GSource *source, GSourceFunc callback, gpoint
 
 static void wl_source_finalize(GSource *source) {
     WLSource *self = (WLSource *)source;
+
     wl_display_disconnect(self->display);
 }
 
@@ -96,9 +99,12 @@ WLSource *wl_source_new() {
 
 void wl_source_free(WLSource *self) {
     GSource *source = (GSource *)self;
+
     g_return_if_fail(source != NULL);
     g_source_destroy(source);
     g_source_unref(source);
 }
 
-struct wl_display *wl_source_get_display(WLSource *self) { return self->display; }
+struct wl_display *wl_source_get_display(WLSource *self) {
+    return self->display;
+}

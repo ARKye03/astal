@@ -1,10 +1,10 @@
 namespace AstalMpris {
-    /**
-     * Gets the default singleton Mpris instance.
-     */
-    public Mpris get_default() {
-        return Mpris.get_default();
-    }
+/**
+ * Gets the default singleton Mpris instance.
+ */
+public Mpris get_default() {
+    return Mpris.get_default();
+}
 }
 
 /**
@@ -26,13 +26,13 @@ public class AstalMpris.Mpris : Object {
         return instance;
     }
 
-    private HashTable<string, Player> _players =
-        new HashTable<string, Player> (str_hash, str_equal);
+    private HashTable <string, Player> _players =
+        new HashTable <string, Player> (str_hash, str_equal);
 
     /**
      * List of currently available players.
      */
-    public List<weak Player> players { owned get { return _players.get_values(); } }
+    public List <weak Player> players { owned get { return _players.get_values(); } }
 
     /**
      * Emitted when a new mpris Player appears.
@@ -71,6 +71,7 @@ public class AstalMpris.Mpris : Object {
 
     private void add_player(string busname) {
         var p = new Player(busname);
+
         _players.set(busname, p);
 
         p.closed.connect(() => {
