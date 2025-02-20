@@ -136,10 +136,7 @@ public class Astal.CircularProgressBar : Gtk.Widget, Gtk.Buildable {
         // Initialize progress arc gizmo
         _progress_arc = new Astal.Gizmo(
             "progress",
-            (orientation, for_size, out minimum, out natural, out min_baseline, out nat_baseline) => {
-            minimum = natural = get_width();
-            min_baseline = nat_baseline = -1;
-        },
+            calculate_measurement,
             null,
             draw_progress_arc,
             null, null, null
@@ -148,10 +145,7 @@ public class Astal.CircularProgressBar : Gtk.Widget, Gtk.Buildable {
         // Initialize center fill gizmo
         _center_fill = new Astal.Gizmo(
             "center",
-            (orientation, for_size, out minimum, out natural, out min_baseline, out nat_baseline) => {
-            minimum = natural = get_width();
-            min_baseline = nat_baseline = -1;
-        },
+            calculate_measurement,
             null,
             draw_center_fill,
             null, null, null
@@ -160,10 +154,7 @@ public class Astal.CircularProgressBar : Gtk.Widget, Gtk.Buildable {
         // Initialize radius fill gizmo
         _radius_fill = new Astal.Gizmo(
             "radius",
-            (orientation, for_size, out minimum, out natural, out min_baseline, out nat_baseline) => {
-            minimum = natural = get_width();
-            min_baseline = nat_baseline = -1;
-        },
+            calculate_measurement,
             null,
             draw_radius_fill,
             null, null, null
@@ -235,6 +226,18 @@ public class Astal.CircularProgressBar : Gtk.Widget, Gtk.Buildable {
         if (_child != null) {
             _child.snapshot(snapshot);
         }
+    }
+
+    private void calculate_measurement(
+        Gtk.Orientation orientation,
+        int for_size,
+        out int minimum,
+        out int natural,
+        out int minimum_baseline,
+        out int natural_baseline
+    ) {
+        minimum = natural = get_width();
+        minimum_baseline = natural_baseline = -1;
     }
 
     private void draw_progress_arc(Gtk.Snapshot snapshot) {
