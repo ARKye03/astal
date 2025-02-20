@@ -30,6 +30,7 @@ sources = [config] + files(
   'widget/slider.vala',
   'widget/window.vala',
   'widget/gizmo.vala',
+  'widget/circularprogress.vala',
   'application.vala',
 )
 
@@ -40,6 +41,7 @@ lib = library(
   vala_args: ['--vapi-comments'],
   vala_header: meson.project_name() + '.h',
   vala_vapi: meson.project_name() + '-' + api_version + '.vapi',
+  link_args: ['-lm'],
   version: meson.project_version(),
   install: true,
   install_dir: [true, true, true],
