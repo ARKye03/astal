@@ -5,7 +5,7 @@
  * It supports various styling options including center filling, radius filling, and
  * customizable line properties.
  */
-public class CircularProgressBar : Gtk.Widget, Gtk.Buildable {
+public class Astal.CircularProgressBar : Gtk.Widget, Gtk.Buildable {
     private Astal.Gizmo _progress_arc;
     private Astal.Gizmo _center_fill;
     private Astal.Gizmo _radius_fill;
@@ -165,7 +165,7 @@ public class CircularProgressBar : Gtk.Widget, Gtk.Buildable {
             min_baseline = nat_baseline = -1;
         },
             null,
-            snapshot,
+            draw_radius_fill,
             null, null, null
         );
 
@@ -223,17 +223,6 @@ public class CircularProgressBar : Gtk.Widget, Gtk.Buildable {
         var actual_line_width = (float)line_width;
         if (actual_line_width > radius * 2) {
             actual_line_width = radius * 2;
-        }
-
-        // Update geometries
-        _progress_arc.update_geometry(width / 2.0f, height / 2.0f, delta, actual_line_width, line_cap, percentage);
-
-        if (center_filled) {
-            _center_fill.update_geometry(width / 2.0f, height / 2.0f, delta, fill_rule);
-        }
-
-        if (radius_filled) {
-            _radius_fill.update_geometry(width / 2.0f, height / 2.0f, delta, radius, actual_line_width);
         }
 
         // Draw in correct order: background to foreground
