@@ -174,10 +174,6 @@ public class Astal.CircularProgressBar : Gtk.Widget, Gtk.Buildable {
         _radius_fill.set_parent(this);
 
         layout_manager = new Gtk.BinLayout();
-        overflow = Gtk.Overflow.HIDDEN;
-        can_focus = true;
-        focusable = true;
-        can_target = true;
 
         notify.connect(() => {
             queue_draw();
