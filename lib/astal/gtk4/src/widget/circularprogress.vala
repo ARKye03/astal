@@ -92,9 +92,6 @@ public class Astal.CircularProgressBar : Gtk.Widget, Gtk.Buildable {
 
             if (_child != null) {
                 _child.set_parent(this);
-                _child.notify.connect(() => {
-                    queue_draw();
-                });
             }
         }
     }
@@ -157,9 +154,6 @@ public class Astal.CircularProgressBar : Gtk.Widget, Gtk.Buildable {
         Object(
             name : "circularprogress"
         );
-        notify.connect(() => {
-            queue_draw();
-        });
     }
 
     protected override void dispose() {
