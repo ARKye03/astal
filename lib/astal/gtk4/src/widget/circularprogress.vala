@@ -200,7 +200,7 @@ public class Astal.CircularProgressBar : Gtk.Widget, Gtk.Buildable {
         _progress_arc.snapshot(snapshot);
 
         if (_child != null) {
-            _child.snapshot(snapshot);
+            snapshot_child(_child, snapshot);
         }
     }
 
