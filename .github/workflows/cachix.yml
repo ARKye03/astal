@@ -24,6 +24,7 @@ jobs:
     - run: nix build .#all-tarballs
     - uses: ncipollo/release-action@v1.18.0
       with:
+        tag: ${{ github.ref_name != 'CI/Release' && github.ref_name || format('test-{0}', github.run_number) }}
         prerelease: true
         artifactErrorsFailBuild: true
         artifacts: "result/*"
