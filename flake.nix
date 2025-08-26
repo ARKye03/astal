@@ -43,6 +43,7 @@
         mkdir -p $out
         ${pkgs.lib.concatMapStringsSep "\n" (pkg: ''
           tar -cJf $out/${pkg.pname}-${pkg.version}.tar.xz -C ${pkg} .
+          sha256sum $out/${pkg.pname}-${pkg.version}.tar.xz > $out/${pkg.pname}-${pkg.version}.tar.xz.sha256
         '') (builtins.attrValues packages)}
       '';
     });
