@@ -13,7 +13,15 @@
           inherit self pkgs;
           mkAstalPkg = mkAstalPkg;
         };
-      
+
+      mkTarball = pkg: pkgs.runCommand "${pkg.pname}-tarball" {
+        nativeBuildInputs = [ pkgs.xz ];
+      } ''
+        mkdir -p $out
+        tar -cJf $out/${pkg.pname}-${pkg.version}.tar.xz -C ${pkg} .
+        sha256sum $out/${pkg.pname}-${pkg.version}.tar.xz > $out/${pkg.pname}-${pkg.version}.tar.xz.sha256
+      '';
+
       packages = {
         io = mkPkg ./lib/astal/io;
         astal3 = mkPkg ./lib/astal/gtk3;
@@ -36,7 +44,25 @@
     in packages // {
       default = packages.io;
       docs = import ./docs {inherit self pkgs;};
-      
+
+      io-tarball = mkTarball packages.io;
+      astal3-tarball = mkTarball packages.astal3;
+      astal4-tarball = mkTarball packages.astal4;
+      apps-tarball = mkTarball packages.apps;
+      auth-tarball = mkTarball packages.auth;
+      battery-tarball = mkTarball packages.battery;
+      bluetooth-tarball = mkTarball packages.bluetooth;
+      cava-tarball = mkTarball packages.cava;
+      greet-tarball = mkTarball packages.greet;
+      hyprland-tarball = mkTarball packages.hyprland;
+      mpris-tarball = mkTarball packages.mpris;
+      network-tarball = mkTarball packages.network;
+      notifd-tarball = mkTarball packages.notifd;
+      powerprofiles-tarball = mkTarball packages.powerprofiles;
+      river-tarball = mkTarball packages.river;
+      tray-tarball = mkTarball packages.tray;
+      wireplumber-tarball = mkTarball packages.wireplumber;
+
       all-tarballs = pkgs.runCommand "all-astal-tarballs" {
         nativeBuildInputs = [ pkgs.xz ];
       } ''
