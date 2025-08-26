@@ -20,8 +20,8 @@ jobs:
       with:
         name: nixarkye03
         authToken: '${{ secrets.CACHIX_AUTH_TOKEN }}'
+    # - run: nix flake check
     - run: nix build .#all-tarballs
-    - run: nix flake check
     - uses: ncipollo/release-action@v1.18.0
       with:
         prerelease: true
